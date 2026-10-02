@@ -1,983 +1,757 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>PX + Salesforce: Solutions Readback</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap');
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;--blue:#1b6fd6;--violet:#6b3fd1;--teal:#0f8a77;--amber:#c46a12}
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:'Instrument Sans',system-ui,sans-serif}
-body{display:flex;flex-direction:column}
-nav{display:flex;align-items:center;gap:6px;padding:10px 20px;background:var(--white);border-bottom:1px solid var(--line);flex-wrap:wrap}
-nav .brand{font-weight:700;font-size:15px;margin-right:14px}
-nav button{font:inherit;font-size:14px;border:1px solid transparent;background:none;color:var(--muted);padding:7px 12px;border-radius:8px;cursor:pointer}
-nav button:hover{color:var(--ink);background:var(--paper)}
-nav button[aria-current="true"]{color:var(--white);background:var(--ink)}
-nav button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-nav .pager{margin-left:auto;display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
-nav .pager button{border-color:var(--line);color:var(--ink)}
-main{flex:1;position:relative;min-height:0}
-.view{position:absolute;inset:0;overflow:auto;display:none}
-.view.on{display:block}
-iframe{width:100%;height:100%;border:0;display:block}
-.pg{max-width:1180px;margin:0 auto;padding:48px 32px}
-/* cover */
-.cover h1{font-size:44px;line-height:1.1;margin:0 0 14px;letter-spacing:-.02em;max-width:18ch}
-.cover .lede{font-size:18px;color:var(--muted);max-width:60ch;line-height:1.5;margin:0 0 36px}
-.agenda{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.ag{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;text-align:left;font:inherit;color:inherit}
-.ag:hover{border-color:var(--ink)}
-.ag .n{font-size:13px;color:var(--muted)}
-.ag h3{margin:6px 0 6px;font-size:17px}
-.ag p{margin:0;font-size:14px;color:var(--muted);line-height:1.45}
-.cover .ask{margin-top:34px;font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:22px;max-width:56ch;line-height:1.35}
-/* plan */
-.plan h1{font-size:30px;margin:0 0 8px}
-.plan .lede{font-size:16px;color:var(--muted);margin:0 0 28px;max-width:66ch;line-height:1.5}
-.tl{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:34px}
-.tl:before{content:"";position:absolute;left:0;right:0;top:15px;height:2px;background:var(--line)}
-.ms{position:relative;padding-top:34px}
-.ms:before{content:"";position:absolute;top:8px;left:0;width:16px;height:16px;border-radius:50%;background:var(--white);border:3px solid var(--blue)}
-.ms.done:before{background:var(--blue)}
-.ms.key:before{border-color:var(--amber)}
-.ms .d{font-size:13px;font-weight:600;color:var(--muted)}
-.ms h3{font-size:15px;margin:4px 0 4px}
-.ms p{margin:0;font-size:13px;color:var(--muted);line-height:1.45}
-.cols2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
-.panel h2{font-size:17px;margin:0 0 12px}
-.panel ul{margin:0;padding-left:18px;font-size:14px;line-height:1.6}
-@media(max-width:900px){.agenda,.cols2{grid-template-columns:1fr}.tl{grid-template-columns:1fr 1fr}.tl:before{display:none}.cover h1{font-size:34px}}
-@media print{nav{display:none}.view{position:static;display:block;page-break-after:always}iframe{height:1400px}}
-
-nav .brand .home{font-weight:700;font-size:15px;color:var(--ink);padding:7px 8px}
-nav .brand .home[aria-current="true"]{background:none;color:var(--ink);text-decoration:underline;text-underline-offset:4px}
-nav .grp{display:flex;align-items:center;gap:2px;padding-left:10px;border-left:1px solid var(--line)}
-nav .gl{font-size:12px;color:var(--muted);margin-right:4px}
-nav button{padding:6px 10px;font-size:13px}
-</style></head><body>
-<nav aria-label="Sections"><span class="brand"><button data-i="0" class="home">PX + Salesforce</button></span><span class="grp"><span class="gl">Today</span><button data-i="1">How PX works</button><button data-i="2">HubSpot today</button></span><span class="grp"><span class="gl">Vision</span><button data-i="3">Architecture</button><button data-i="4">Four pillars</button><button data-i="5">Monday morning</button><button data-i="6">Data model</button></span><span class="grp"><span class="gl">Proof</span><button data-i="7">Net revenue view</button><button data-i="8">Publisher funnel</button></span><span class="grp"><span class="gl">Value</span><button data-i="9">Value calculator</button><button data-i="10">Cost picture</button></span><span class="grp"><span class="gl">Plan</span><button data-i="11">Path forward</button></span><span class="pager"><button id="prev" aria-label="Previous section">Back</button><span id="count"></span><button id="next" aria-label="Next section">Next</button></span></nav>
+<link rel="stylesheet" href="styles.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="hdr">
+  <div class="prog"><div class="bar" id="bar"></div></div>
+  <div class="row1">
+    <button class="brand" data-go="0" aria-label="Go to first page">PX <span>+</span> Salesforce</button>
+    <nav class="majors" aria-label="Sections"></nav>
+    <div class="pager"><button id="prev" aria-label="Previous page">Back</button><span id="count" aria-live="polite"></span><button id="next" aria-label="Next page">Next</button></div>
+  </div>
+  <div class="row2">
+    <span class="sublabel" id="sublabel"></span>
+    <nav class="pages" id="pages" aria-label="Pages in this section"></nav>
+    <span class="upnext" id="upnext"></span>
+  </div>
+</header>
 <main>
-<div class="view"><div class="pg cover">
-    <h1>A shared picture of PX, and what Salesforce could change</h1>
-    <p class="lede">Built from our conversations with the PX team in September. We’ll walk through how we understand the business and how HubSpot is used today, then show where Salesforce adds value and how we’d get there before the December renewal.</p>
+<div class="edge left" id="edgeL"><button tabindex="-1" aria-hidden="true" title="Previous page"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<div class="edge right" id="edgeR"><button tabindex="-1" aria-hidden="true" title="Next page"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<div class="view" id="s0">
+<div class="pg cover">
+    <div class="hero"><div>
+    <h1>Predictable growth, on both sides of PX’s marketplace</h1>
+    <p class="lede">A shared picture of how PX runs today and what Salesforce could change, built from our September conversations with the PX team. We’ll cover sales, client success and marketing, and agree on a path to a decision before the December renewal.</p>
+    </div><svg class="dots" viewBox="0 0 520 220" role="img" aria-label="Scattered dots lining up into a single line"><circle cx="20.0" cy="60.3" r="2.6" fill="currentColor" opacity="0.35"/><circle cx="20.0" cy="47.2" r="2.6" fill="currentColor" opacity="0.35"/><circle cx="20.0" cy="155.2" r="2.6" fill="currentColor" opacity="0.35"/><circle cx="39.2" cy="20.6" r="2.6" fill="currentColor" opacity="0.38"/><circle cx="39.2" cy="116.1" r="2.6" fill="currentColor" opacity="0.38"/><circle cx="39.2" cy="104.6" r="2.6" fill="currentColor" opacity="0.38"/><circle cx="58.4" cy="23.8" r="2.6" fill="currentColor" opacity="0.40"/><circle cx="58.4" cy="111.2" r="2.6" fill="currentColor" opacity="0.40"/><circle cx="58.4" cy="53.7" r="2.6" fill="currentColor" opacity="0.40"/><circle cx="77.6" cy="84.4" r="2.6" fill="currentColor" opacity="0.43"/><circle cx="77.6" cy="46.9" r="2.6" fill="currentColor" opacity="0.43"/><circle cx="77.6" cy="65.8" r="2.6" fill="currentColor" opacity="0.43"/><circle cx="96.8" cy="84.6" r="2.6" fill="currentColor" opacity="0.45"/><circle cx="96.8" cy="154.5" r="2.6" fill="currentColor" opacity="0.45"/><circle cx="96.8" cy="73.9" r="2.6" fill="currentColor" opacity="0.45"/><circle cx="116.0" cy="60.7" r="2.6" fill="currentColor" opacity="0.48"/><circle cx="116.0" cy="126.1" r="2.6" fill="currentColor" opacity="0.48"/><circle cx="116.0" cy="180.8" r="2.6" fill="currentColor" opacity="0.48"/><circle cx="135.2" cy="105.3" r="2.6" fill="currentColor" opacity="0.51"/><circle cx="135.2" cy="98.0" r="2.6" fill="currentColor" opacity="0.51"/><circle cx="135.2" cy="178.9" r="2.6" fill="currentColor" opacity="0.51"/><circle cx="154.4" cy="48.8" r="2.6" fill="currentColor" opacity="0.53"/><circle cx="154.4" cy="148.1" r="2.6" fill="currentColor" opacity="0.53"/><circle cx="154.4" cy="100.6" r="2.6" fill="currentColor" opacity="0.53"/><circle cx="173.6" cy="63.2" r="2.6" fill="currentColor" opacity="0.56"/><circle cx="173.6" cy="72.9" r="2.6" fill="currentColor" opacity="0.56"/><circle cx="173.6" cy="103.6" r="2.6" fill="currentColor" opacity="0.56"/><circle cx="192.8" cy="126.3" r="2.6" fill="currentColor" opacity="0.58"/><circle cx="192.8" cy="81.9" r="2.6" fill="currentColor" opacity="0.58"/><circle cx="192.8" cy="128.7" r="2.6" fill="currentColor" opacity="0.58"/><circle cx="212.0" cy="110.2" r="2.6" fill="currentColor" opacity="0.61"/><circle cx="212.0" cy="99.9" r="2.6" fill="currentColor" opacity="0.61"/><circle cx="212.0" cy="124.6" r="2.6" fill="currentColor" opacity="0.61"/><circle cx="231.2" cy="68.8" r="2.6" fill="currentColor" opacity="0.64"/><circle cx="231.2" cy="78.7" r="2.6" fill="currentColor" opacity="0.64"/><circle cx="231.2" cy="99.1" r="2.6" fill="currentColor" opacity="0.64"/><circle cx="250.4" cy="112.0" r="2.6" fill="currentColor" opacity="0.66"/><circle cx="250.4" cy="105.4" r="2.6" fill="currentColor" opacity="0.66"/><circle cx="250.4" cy="107.6" r="2.6" fill="currentColor" opacity="0.66"/><circle cx="269.6" cy="106.1" r="2.6" fill="currentColor" opacity="0.69"/><circle cx="269.6" cy="107.4" r="2.6" fill="currentColor" opacity="0.69"/><circle cx="269.6" cy="107.5" r="2.6" fill="currentColor" opacity="0.69"/><circle cx="288.8" cy="116.3" r="2.6" fill="currentColor" opacity="0.71"/><circle cx="288.8" cy="119.6" r="2.6" fill="currentColor" opacity="0.71"/><circle cx="288.8" cy="105.5" r="2.6" fill="currentColor" opacity="0.71"/><circle cx="308.0" cy="105.9" r="2.6" fill="currentColor" opacity="0.74"/><circle cx="308.0" cy="111.0" r="2.6" fill="currentColor" opacity="0.74"/><circle cx="308.0" cy="132.8" r="2.6" fill="currentColor" opacity="0.74"/><circle cx="327.2" cy="111.6" r="2.6" fill="currentColor" opacity="0.77"/><circle cx="327.2" cy="102.6" r="2.6" fill="currentColor" opacity="0.77"/><circle cx="327.2" cy="133.3" r="2.6" fill="currentColor" opacity="0.77"/><circle cx="346.4" cy="93.1" r="2.6" fill="currentColor" opacity="0.79"/><circle cx="346.4" cy="107.6" r="2.6" fill="currentColor" opacity="0.79"/><circle cx="346.4" cy="123.2" r="2.6" fill="currentColor" opacity="0.79"/><circle cx="365.6" cy="96.8" r="3.2" fill="currentColor" opacity="0.82"/><circle cx="365.6" cy="109.7" r="3.2" fill="currentColor" opacity="0.82"/><circle cx="365.6" cy="104.2" r="3.2" fill="currentColor" opacity="0.82"/><circle cx="384.8" cy="108.8" r="3.2" fill="currentColor" opacity="0.84"/><circle cx="384.8" cy="114.9" r="3.2" fill="currentColor" opacity="0.84"/><circle cx="384.8" cy="115.7" r="3.2" fill="currentColor" opacity="0.84"/><circle cx="404.0" cy="111.5" r="3.2" fill="currentColor" opacity="0.87"/><circle cx="404.0" cy="107.4" r="3.2" fill="currentColor" opacity="0.87"/><circle cx="404.0" cy="116.3" r="3.2" fill="currentColor" opacity="0.87"/><circle cx="423.2" cy="108.0" r="3.2" fill="currentColor" opacity="0.90"/><circle cx="423.2" cy="110.8" r="3.2" fill="currentColor" opacity="0.90"/><circle cx="423.2" cy="112.5" r="3.2" fill="currentColor" opacity="0.90"/><circle cx="442.4" cy="109.9" r="3.2" fill="currentColor" opacity="0.92"/><circle cx="442.4" cy="112.7" r="3.2" fill="currentColor" opacity="0.92"/><circle cx="442.4" cy="112.0" r="3.2" fill="currentColor" opacity="0.92"/><circle cx="461.6" cy="109.1" r="3.2" fill="currentColor" opacity="0.95"/><circle cx="461.6" cy="108.6" r="3.2" fill="currentColor" opacity="0.95"/><circle cx="461.6" cy="112.1" r="3.2" fill="currentColor" opacity="0.95"/><circle cx="480.8" cy="109.4" r="3.2" fill="currentColor" opacity="0.97"/><circle cx="480.8" cy="110.5" r="3.2" fill="currentColor" opacity="0.97"/><circle cx="480.8" cy="111.1" r="3.2" fill="currentColor" opacity="0.97"/><circle cx="500.0" cy="110.0" r="3.2" fill="currentColor" opacity="1.00"/><circle cx="500.0" cy="110.0" r="3.2" fill="currentColor" opacity="1.00"/><circle cx="500.0" cy="110.0" r="3.2" fill="currentColor" opacity="1.00"/><line x1="366" y1="110.0" x2="500" y2="110.0" stroke="currentColor" stroke-width="2" opacity=".25"/></svg></div>
     <div class="agenda">
-      <button class="ag" data-i="1"><span class="n">Today</span><h3>How PX works</h3><p>The marketplace, how PX earns, and how HubSpot is used now.</p></button>
-      <button class="ag" data-i="3"><span class="n">Vision</span><h3>What could change</h3><p>The architecture, four pillars, a GM’s Monday morning, and the data model.</p></button>
-      <button class="ag" data-i="7"><span class="n">Proof and value</span><h3>What it’s worth</h3><p>Net revenue and publisher views, a value calculator, and the full cost picture.</p></button>
-      <button class="ag" data-i="11"><span class="n">Plan</span><h3>Path forward</h3><p>The implementation approach, a proposed timeline and next steps.</p></button>
+      <button class="ag" data-go="2"><span class="n">Today</span><h3>How PX works</h3><p>The marketplace, how PX earns, and how HubSpot is used now.</p></button>
+      <button class="ag" data-go="4"><span class="n">Vision</span><h3>What could change</h3><p>Architecture, four pillars, Slack as the front door, and a GM’s Monday morning.</p></button>
+      <button class="ag" data-go="10"><span class="n">Proof</span><h3>What you’d see</h3><p>Net revenue live, media spend to net revenue, and onboarding journeys.</p></button>
+      <button class="ag" data-go="13"><span class="n">Value</span><h3>What it’s worth</h3><p>A value model, what you can retire, and the full cost picture.</p></button>
+      <button class="ag" data-go="16"><span class="n">Plan</span><h3>Path forward</h3><p>A proposed timeline and what we’d like to agree on today.</p></button>
     </div>
+    <button class="ex" data-go="1">Short on time? Start with the executive summary</button>
     <p class="ask">Please stop us whenever we’ve got something wrong. Your corrections are the most useful part of this conversation.</p>
-  </div></div><div class="view"><iframe title="How PX works" srcdoc="&lt;!-- How PX works: two-sided lead marketplace --&gt;
-&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;
---supply:#0f8a77;--supply-t:#e3f3ef;--px:#1b6fd6;--px-t:#e4eefb;--demand:#c46a12;--demand-t:#fbeedf;--pain:#c2334d}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1180px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 30px;max-width:70ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 14px}
-section{margin-bottom:34px}
+    <p class="prep">Prepared for PX by the Salesforce account team</p>
+  </div>
+</div>
+<div class="view" id="s1">
+<div class="wrap">
+  <h1>Executive summary</h1>
+  <p class="lede">The whole readback on one page, for anyone who needs the short version.</p>
+  <div class="es">
+    <div class="card"><h2><span class="n1">1</span>Where PX is today</h2><ul>
+      <li>A two-sided marketplace running on a CRM built for one side</li>
+      <li>Net revenue lives in ClickHouse, deals in HubSpot, payments in NetSuite, and they’re matched by hand or by company name</li>
+      <li>Reporting, admin and status questions take time from leaders and sellers</li>
+      <li>Marketing spend is measured apart from the revenue it produces</li></ul>
+      <div class="go"><button data-go="3">HubSpot today</button></div></div>
+    <div class="card"><h2><span class="n2">2</span>What changes with Salesforce</h2><ul>
+      <li>PX platform data joined to every account and deal, matched on PX account ID</li>
+      <li>Slack becomes the front door: ask in plain language, get dashboards and answers</li>
+      <li>Activity captured automatically, with alerts on stalled deals and publishers</li>
+      <li>Marketing measured on net revenue, on both sides of the market</li></ul>
+      <div class="go"><button data-go="4">Architecture</button><button data-go="6">Slack as the front door</button></div></div>
+    <div class="card"><h2><span class="n3">3</span>What it’s worth</h2><ul>
+      <li>Hours back for RevOps, GMs, sellers and the BI team</li>
+      <li>Media spend shifted toward what earns the most net revenue</li>
+      <li>Revenue from publishers and deals that stall today</li>
+      <li>Tools retired or reduced, and a custom NetSuite build avoided</li></ul>
+      <div class="go"><button data-go="13">Value calculator</button><button data-go="14">What you can retire</button></div></div>
+    <div class="card"><h2><span class="n4">4</span>The investment</h2><ul>
+      <li>Compared against PX’s full tool spend, not HubSpot alone</li>
+      <li>Slack and Tableau consolidated into one agreement</li>
+      <li>Licenses sized to the people who edit records</li>
+      <li>Implementation scoped with PX and a partner</li></ul>
+      <div class="go"><button data-go="15">Cost picture</button></div></div>
+  </div>
+  <div class="dec"><div><b>The decision</b><p>Whether to renew HubSpot in December or move to one platform where sales, marketing, finance data and Slack work from the same source.</p></div><div class="when">HubSpot notice: late October</div></div>
+</div>
+</div>
+<div class="view" id="s2">
+<div class="wrap">
+  <h1>How PX works</h1>
+  <p class="lede">PX runs a two-sided marketplace. Publishers generate consumer leads and calls, PX filters, prices and routes them in real time, and advertisers bid to receive them in their own CRM. PX earns on the spread or on fees.</p>
 
-/* marketplace flow */
-.flow{display:grid;grid-template-columns:1fr 60px 1.25fr 60px 1fr;align-items:stretch}
-.side{border-radius:14px;padding:20px}
-.side h3{font-size:17px;margin:0 0 4px}
-.side .who{font-size:13px;color:var(--muted);margin:0 0 12px}
-.side ul{margin:0;padding-left:18px;font-size:14px;line-height:1.55}
-.supply{background:var(--supply-t);border-top:5px solid var(--supply)}
-.demand{background:var(--demand-t);border-top:5px solid var(--demand)}
-.core{background:var(--px);color:var(--white);border-radius:14px;padding:20px 22px}
-.core h3{font-size:19px;margin:0 0 4px}
-.core .who{font-size:13px;opacity:.85;margin:0 0 14px}
-.steps{display:grid;gap:8px}
-.step{background:rgba(255,255,255,.14);border-radius:9px;padding:9px 12px;font-size:14px;line-height:1.4}
-.step b{font-weight:600}
-.conn{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-align:center}
-.conn .ar{width:100%;height:2px;background:var(--ink);position:relative}
-.conn .ar:after{content:&quot;&quot;;position:absolute;right:-1px;top:-5px;border-left:9px solid var(--ink);border-top:6px solid transparent;border-bottom:6px solid transparent}
-.consumer{margin:0 0 14px;display:grid;grid-template-columns:1fr 60px 1.25fr 60px 1fr}
-.consumer .c{grid-column:1/2;background:var(--white);border:1px dashed var(--muted);border-radius:10px;padding:10px 14px;font-size:14px}
-.consumer .c2{grid-column:5/6;background:var(--white);border:1px dashed var(--muted);border-radius:10px;padding:10px 14px;font-size:14px}
-.verts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.verts span{font-size:13px;background:var(--white);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+  <section>
+    <h2>The marketplace</h2>
+    <div class="consumer">
+      <div class="c">Consumers fill out forms or call after seeing publisher content and landing pages</div>
+      <div class="c2">Advertisers call and convert those consumers into their own customers</div>
+    </div>
+    <div class="flow">
+      <div class="side supply">
+        <h3>Publishers and suppliers</h3>
+        <p class="who">Supply side, about 10 people at PX</p>
+        <ul>
+          <li>Drive traffic through websites, newsletters and social</li>
+          <li>Sell leads and calls into the marketplace</li>
+          <li>Integrate with PX by API themselves, send test leads, then go live</li>
+        </ul>
+      </div>
+      <div class="conn"><span>Leads and calls</span><div class="ar"></div></div>
+      <div class="core">
+        <h3>PX platform</h3>
+        <p class="who">The marketplace in the middle</p>
+        <div class="steps">
+          <div class="step"><b>Filter</b> out bad leads and check TCPA/FCC consent</div>
+          <div class="step"><b>Match</b> to buyer campaigns by vertical, state, hours and other filters</div>
+          <div class="step"><b>Auction</b> each lead, where the highest bidder wins</div>
+          <div class="step"><b>Deliver</b> in real time by API into the buyer’s CRM, or as aged data</div>
+        </div>
+      </div>
+      <div class="conn"><span>Real-time delivery</span><div class="ar"></div></div>
+      <div class="side demand">
+        <h3>Advertisers and buyers</h3>
+        <p class="who">Demand side, about 15 people at PX</p>
+        <ul>
+          <li>B2B companies selling to consumers</li>
+          <li>Buy leads, calls or aged data</li>
+          <li>PX handles the CRM integration for them</li>
+          <li>The top priority side for growth</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verts">
+      <span>Home services</span><span>Education</span><span>Financial services</span><span>Health insurance and Medicare</span><span>Aged data</span><span>Mortgage (lower volume now)</span>
+    </div>
+  </section>
 
-/* money */
-.money{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.model{background:var(--white);border-radius:14px;padding:18px 20px;border:1px solid var(--line)}
-.model h3{font-size:16px;margin:0 0 8px}
-.model p{font-size:14px;line-height:1.5;margin:0 0 10px;color:var(--ink)}
-.bar{display:flex;height:30px;border-radius:7px;overflow:hidden;font-size:12px;font-weight:600;color:var(--white)}
-.bar div{display:flex;align-items:center;justify-content:center}
-.note{font-size:13px;color:var(--muted);margin-top:12px}
+  <section>
+    <h2>How PX makes money</h2>
+    <div class="money">
+      <div class="model">
+        <h3>Margin</h3>
+        <p>PX keeps a share of every lead sold, and that spread is PX’s net revenue.</p>
+        <div class="bar"><div class="u0">Publisher ~80%</div><div class="u1">PX</div></div>
+      </div>
+      <div class="model">
+        <h3>Zero margin with a platform fee</h3>
+        <p>Buyers bid higher and win more leads. PX charges a tiered monthly fee based on volume.</p>
+        <div class="bar"><div class="u2">Full bid to publisher, plus monthly fee to PX</div></div>
+      </div>
+      <div class="model">
+        <h3>Performance (CPA)</h3>
+        <p>The buyer pays per outcome, for example $300 per appointment. PX carries the risk of how many leads that takes.</p>
+        <div class="bar"><div class="u3">Paid per converted appointment</div></div>
+      </div>
+    </div>
+    <p class="note">Sales directors choose the model deal by deal based on experience, with no formal playbook. The ~80% split is the illustrative example PX gave. Deals carry a projected 12-month net revenue from cohort defaults, which the team reviews against actuals every quarter.</p>
+  </section>
 
-/* gtm + data */
-.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.panel{background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--line)}
-.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px}
-.chain .n{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:7px 11px}
-.chain .n.hot{border-color:var(--pain);background:#fbe9ec}
-.chain .a{color:var(--muted)}
-.pain{margin-top:14px;font-size:14px;line-height:1.5}
-.pain div{padding-left:14px;border-left:3px solid var(--pain);margin-bottom:8px}
-.team{margin-top:14px;font-size:14px;line-height:1.55;color:var(--muted)}
+  <section class="two">
+    <div class="panel">
+      <h2>How PX wins both sides</h2>
+      <div class="chain">
+        <span class="n">LeadsCon, trade shows, LinkedIn, webinars, Google Ads</span><span class="a">→</span>
+        <span class="n">Form fill on PX site</span><span class="a">→</span>
+        <span class="n">Vertical sales director</span><span class="a">→</span>
+        <span class="n">Standard agreement and legal</span><span class="a">→</span>
+        <span class="n">Integration and go-live</span><span class="a">→</span>
+        <span class="n">CSM grows the account</span>
+      </div>
+      <p class="team">Advertiser side: 3 GMs, each with a sales director and 2–3 CSMs plus specialists. Supply side: a VP, 2 sales directors and 3 publisher account managers. A separate ad-buying team runs Google and Meta. PX Local adds a self-serve path where buyers sign up without a sales call. The CEO and COO are involved on major clients. Reps are measured on deals created, deals closed and net revenue.</p>
+    </div>
+    <div class="panel">
+      <h2>How the data flows today</h2>
+      <div class="chain">
+        <span class="n">PX platform</span><span class="a">→</span>
+        <span class="n">ClickHouse</span><span class="a">→</span>
+        <span class="n hot">BI-built push</span><span class="a">→</span>
+        <span class="n hot">HubSpot custom campaign object</span>
+      </div>
+      <div class="chain u4"><span class="n">ClickHouse</span><span class="a">→</span><span class="n">Tableau for visualization</span></div>
+      <div class="pain">
+        <div>Deals and companies in HubSpot don’t always match accounts in PX</div>
+        <div>Net revenue and attribution depend on a pipeline the BI team maintains</div>
+        <div>Publisher deals often sign but never produce revenue if the integration stalls</div>
+      </div>
+    </div>
+  </section>
+</div>
+</div>
+<div class="view" id="s3">
+<div class="wrap">
+  <h1>How PX uses HubSpot today</h1>
+  <p class="lede">HubSpot is PX’s system of record for marketing, sales and client success. The team is centralizing more into it every quarter, while campaign and revenue data still arrives from outside through workarounds. This is our read of the current state, drawn from our conversations. Please correct anything we got wrong.</p>
 
-@media(max-width:900px){
- .flow,.consumer{grid-template-columns:1fr}
- .conn{flex-direction:row;padding:10px 0}.conn .ar{width:2px;height:24px}
- .conn .ar:after{right:-5px;top:auto;bottom:-1px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid var(--ink);border-bottom:0}
- .consumer .c,.consumer .c2{grid-column:auto}
- .money,.two{grid-template-columns:1fr}
-}
-&lt;/style&gt;
-&lt;div class=&quot;wrap&quot;&gt;
-  &lt;h1&gt;How PX works&lt;/h1&gt;
-  &lt;p class=&quot;lede&quot;&gt;PX runs a two-sided marketplace. Publishers generate consumer leads and calls, PX filters, prices and routes them in real time, and advertisers bid to receive them in their own CRM. PX earns on the spread or on fees.&lt;/p&gt;
+  <section>
+    <h2>Who is in HubSpot</h2>
+    <div class="seats">
+      <div class="seat total"><div class="big">All teams</div><div class="lbl">Users in total</div><p>PX moved to HubSpot’s per-seat model in late August, and the renewal is in December.</p></div>
+      <div class="seat"><div class="big">Most</div><div class="lbl">Core seats</div><p>Can view and edit records. This covers most of the commercial team and their support staff.</p></div>
+      <div class="seat"><div class="big">Fewer</div><div class="lbl">Sales and service seats</div><p>Needed for sequences, the sales workspace and sentiment reporting. They cost more than a core seat, so they go only to people who need them.</p></div>
+      <div class="seat"><div class="big">Unlimited</div><div class="lbl">View-only seats</div><p>For people who check records but don’t make changes.</p></div>
+    </div>
+  </section>
 
-  &lt;section&gt;
-    &lt;h2&gt;The marketplace&lt;/h2&gt;
-    &lt;div class=&quot;consumer&quot;&gt;
-      &lt;div class=&quot;c&quot;&gt;Consumers fill out forms or call after seeing publisher content and landing pages&lt;/div&gt;
-      &lt;div class=&quot;c2&quot;&gt;Advertisers call and convert those consumers into their own customers&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;flow&quot;&gt;
-      &lt;div class=&quot;side supply&quot;&gt;
-        &lt;h3&gt;Publishers and suppliers&lt;/h3&gt;
-        &lt;p class=&quot;who&quot;&gt;Supply side, about 10 people at PX&lt;/p&gt;
-        &lt;ul&gt;
-          &lt;li&gt;Drive traffic through websites, newsletters and social&lt;/li&gt;
-          &lt;li&gt;Sell leads and calls into the marketplace&lt;/li&gt;
-          &lt;li&gt;Integrate with PX by API themselves, send test leads, then go live&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;conn&quot;&gt;&lt;span&gt;Leads and calls&lt;/span&gt;&lt;div class=&quot;ar&quot;&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div class=&quot;core&quot;&gt;
-        &lt;h3&gt;PX platform&lt;/h3&gt;
-        &lt;p class=&quot;who&quot;&gt;The marketplace in the middle&lt;/p&gt;
-        &lt;div class=&quot;steps&quot;&gt;
-          &lt;div class=&quot;step&quot;&gt;&lt;b&gt;Filter&lt;/b&gt; out bad leads and check TCPA/FCC consent&lt;/div&gt;
-          &lt;div class=&quot;step&quot;&gt;&lt;b&gt;Match&lt;/b&gt; to buyer campaigns by vertical, state, hours and other filters&lt;/div&gt;
-          &lt;div class=&quot;step&quot;&gt;&lt;b&gt;Auction&lt;/b&gt; each lead, where the highest bidder wins&lt;/div&gt;
-          &lt;div class=&quot;step&quot;&gt;&lt;b&gt;Deliver&lt;/b&gt; in real time by API into the buyer’s CRM, or as aged data&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;conn&quot;&gt;&lt;span&gt;Real-time delivery&lt;/span&gt;&lt;div class=&quot;ar&quot;&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div class=&quot;side demand&quot;&gt;
-        &lt;h3&gt;Advertisers and buyers&lt;/h3&gt;
-        &lt;p class=&quot;who&quot;&gt;Demand side, about 15 people at PX&lt;/p&gt;
-        &lt;ul&gt;
-          &lt;li&gt;B2B companies selling to consumers&lt;/li&gt;
-          &lt;li&gt;Buy leads, calls or aged data&lt;/li&gt;
-          &lt;li&gt;PX handles the CRM integration for them&lt;/li&gt;
-          &lt;li&gt;The top priority side for growth&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;verts&quot;&gt;
-      &lt;span&gt;Home services&lt;/span&gt;&lt;span&gt;Education&lt;/span&gt;&lt;span&gt;Financial services&lt;/span&gt;&lt;span&gt;Health insurance and Medicare&lt;/span&gt;&lt;span&gt;Aged data&lt;/span&gt;&lt;span&gt;Mortgage (lower volume now)&lt;/span&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
+  <section>
+    <h2>The journey, from first touch to net revenue</h2>
+    <div class="legend"><span><i class="u5"></i>Marketing</span><span><i class="u6"></i>Sales</span><span><i class="u7"></i>Client success</span><span><i class="u8"></i>Where it breaks down</span></div>
+    <div class="journey">
+      <div class="stage m">
+        <div class="head">Attract<small>Build awareness</small></div>
+        <div class="box"><ul><li>LinkedIn posts, promotion and webinars</li><li>LeadsCon sponsorship twice a year, plus vertical shows</li><li>Google Ads for aged data</li><li>ZoomInfo research on target contacts</li></ul></div>
+        <div class="box who">Marketing team, plus a separate ad-buying team for Meta and Google</div>
+        <div class="box fr"><b>Friction</b>Ad spend is optimized outside HubSpot and measured separately.</div>
+      </div>
+      <div class="stage m">
+        <div class="head">Capture<small>Landing pages and forms</small></div>
+        <div class="box"><ul><li>HubSpot landing pages and lead forms</li><li>A handful of form fills a day</li><li>Over 60,000 contacts</li><li>Marketing emails sent to client and prospect segments</li></ul></div>
+        <div class="box who">Large email blasts go through a separate tool to protect sender reputation</div>
+        <div class="box fr"><b>Friction</b>Campaigns are built by hand, and blasts run in a separate tool. Beyond sequences, there is little automation.</div>
+      </div>
+      <div class="stage s">
+        <div class="head">Assign<small>Rules of engagement</small></div>
+        <div class="box"><ul><li>Each form fill is routed to the sales director for its vertical</li><li>There are no SDRs now, since PX moved away from that model</li><li>Separate pipelines for advertisers and publishers</li></ul></div>
+        <div class="box who">3 advertiser sales directors, and 2 on the publisher side</div>
+        <div class="box fr"><b>Friction</b>The playbook leaves a lot of gray areas, so follow-up varies from rep to rep.</div>
+      </div>
+      <div class="stage s">
+        <div class="head">Work the deal<small>Outreach and qualification</small></div>
+        <div class="box"><ul><li>Sequences built from pre-approved templates</li><li>Prospects who go dark are added to a sequence</li><li>Zoom web calls are recorded and transcribed automatically</li><li>Email is logged through connected inboxes</li></ul></div>
+        <div class="box who">Sales directors, with GMs overseeing each vertical</div>
+        <div class="box fr"><b>Friction</b>Inbound Zoom phone calls must be downloaded and uploaded by hand. Some email logging depends on BCC. Stage updates get skipped.</div>
+      </div>
+      <div class="stage s">
+        <div class="head">Close<small>Deal and projected value</small></div>
+        <div class="box"><ul><li>Standard agreement goes through legal</li><li>The model is margin, platform fee or CPA</li><li>Each deal carries a projected 12-month net revenue from a cohort default, which the rep can edit</li></ul></div>
+        <div class="box who">The sales director picks the pricing model based on experience</div>
+        <div class="box fr"><b>Friction</b>There is no guided playbook for choosing the model. Stalled deals are reviewed by hand.</div>
+      </div>
+      <div class="stage c">
+        <div class="head">Grow and measure<small>Onboarding to expansion</small></div>
+        <div class="box"><ul><li>CSMs and specialists create expansion deals</li><li>Integration tickets are moving from Jira into HubSpot</li><li>Net revenue is attributed back to the first touch</li><li>Projected vs. actual is reviewed each quarter</li></ul></div>
+        <div class="box who">2–3 CSMs per vertical, supported by specialists</div>
+        <div class="box fr"><b>Friction</b>Publisher deals stall at integration. Net revenue arrives through a BI-built push, so marketing attribution is debated after the fact.</div>
+      </div>
+    </div>
+  </section>
 
-  &lt;section&gt;
-    &lt;h2&gt;How PX makes money&lt;/h2&gt;
-    &lt;div class=&quot;money&quot;&gt;
-      &lt;div class=&quot;model&quot;&gt;
-        &lt;h3&gt;Margin&lt;/h3&gt;
-        &lt;p&gt;PX keeps a share of every lead sold, and that spread is PX’s net revenue.&lt;/p&gt;
-        &lt;div class=&quot;bar&quot;&gt;&lt;div style=&quot;width:80%;background:var(--supply)&quot;&gt;Publisher ~80%&lt;/div&gt;&lt;div style=&quot;width:20%;background:var(--px)&quot;&gt;PX&lt;/div&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;model&quot;&gt;
-        &lt;h3&gt;Zero margin with a platform fee&lt;/h3&gt;
-        &lt;p&gt;Buyers bid higher and win more leads. PX charges a tiered monthly fee based on volume.&lt;/p&gt;
-        &lt;div class=&quot;bar&quot;&gt;&lt;div style=&quot;width:100%;background:var(--supply)&quot;&gt;Full bid to publisher, plus monthly fee to PX&lt;/div&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;model&quot;&gt;
-        &lt;h3&gt;Performance (CPA)&lt;/h3&gt;
-        &lt;p&gt;The buyer pays per outcome, for example $300 per appointment. PX carries the risk of how many leads that takes.&lt;/p&gt;
-        &lt;div class=&quot;bar&quot;&gt;&lt;div style=&quot;width:100%;background:var(--demand)&quot;&gt;Paid per converted appointment&lt;/div&gt;&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;p class=&quot;note&quot;&gt;Sales directors choose the model deal by deal based on experience, with no formal playbook. The ~80% split is the illustrative example PX gave. Deals carry a projected 12-month net revenue from cohort defaults, which the team reviews against actuals every quarter.&lt;/p&gt;
-  &lt;/section&gt;
+  <section>
+    <h2>What lives in HubSpot, and what connects to it</h2>
+    <div class="hubmap">
+      <div class="tools">
+        <div class="tool ok"><b>Zoom web meetings</b><span class="st">Recorded, transcribed and linked to meetings on connected calendars</span></div>
+        <div class="tool bad"><b>Zoom phone (inbound)</b><span class="st">Recordings and transcripts are uploaded by hand</span></div>
+        <div class="tool bad"><b>Outlook email</b><span class="st">Connected inboxes, with BCC as a fallback. Logging isn’t always consistent.</span></div>
+        <div class="tool bad"><b>Email blast tool</b><span class="st">Separate from HubSpot, used for large sends to protect sender reputation</span></div>
+        <div class="tool bad"><b>Google, Meta and LinkedIn ads</b><span class="st">Run by a separate ad-buying team and measured outside the CRM</span></div>
+        <div class="tool ok"><b>Claude</b><span class="st">Connected to HubSpot and open to everyone for deal tracking, sentiment and reporting</span></div>
+      </div>
+      <div class="hub">
+        <h3>HubSpot</h3>
+        <p class="sub">PX’s CRM for marketing, sales and client success</p>
+        <div class="objs">
+          <div class="obj"><b>Contacts</b>Over 60K, with marketing touch history</div>
+          <div class="obj"><b>Companies</b>Created by sales and marketing, and matched to PX accounts by name</div>
+          <div class="obj"><b>Deals</b>Separate advertiser and publisher pipelines, plus projected net revenue</div>
+          <div class="obj"><b>Tickets</b>Client integration conversations, moving over from Jira</div>
+          <div class="obj custom"><b>Campaigns (custom)</b>A copy of each PX campaign, linked to its deal and company, carrying net revenue</div>
+          <div class="obj custom"><b>Other custom objects and workflows</b>Built up over years to fit a two-sided business</div>
+        </div>
+        <p class="adm">Administered by Jeroen and one direct report. HubSpot’s built-in AI agents summarize accounts and suggest next steps, but the output is often noisy. The contract also bundles Marketing Hub, a Brand add-on and a dedicated sending IP.</p>
+      </div>
+      <div class="tools">
+        <div class="tool bad"><b>ClickHouse</b><span class="st">Pushes PX campaign and net revenue data into HubSpot through an automation the BI team maintains</span></div>
+        <div class="tool ok"><b>Tableau</b><span class="st">Visualizes ClickHouse data for deeper analysis by vertical and client</span></div>
+        <div class="tool bad"><b>Monday.com</b><span class="st">Strategic planning boards, KPI tracking and shared client workspaces. Some pipeline tracking is moving back into HubSpot</span></div>
+        <div class="tool bad"><b>NetSuite</b><span class="st">Billing, invoicing and payments, walled off for finance. Payment questions go through email and Slack</span></div>
+        <div class="tool ok"><b>Slack</b><span class="st">Where the team works day to day, but not connected to the CRM workflow</span></div>
+      </div>
+    </div>
+  </section>
 
-  &lt;section class=&quot;two&quot;&gt;
-    &lt;div class=&quot;panel&quot;&gt;
-      &lt;h2&gt;How PX wins both sides&lt;/h2&gt;
-      &lt;div class=&quot;chain&quot;&gt;
-        &lt;span class=&quot;n&quot;&gt;LeadsCon, trade shows, LinkedIn, webinars, Google Ads&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;Form fill on PX site&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;Vertical sales director&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;Standard agreement and legal&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;Integration and go-live&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;CSM grows the account&lt;/span&gt;
-      &lt;/div&gt;
-      &lt;p class=&quot;team&quot;&gt;Advertiser side: 3 GMs, each with a sales director and 2–3 CSMs plus specialists. Supply side: a VP, 2 sales directors and 3 publisher account managers. The CEO and COO are involved on major clients. Reps are measured on deals created, deals closed and net revenue.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;panel&quot;&gt;
-      &lt;h2&gt;How the data flows today&lt;/h2&gt;
-      &lt;div class=&quot;chain&quot;&gt;
-        &lt;span class=&quot;n&quot;&gt;PX platform&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;ClickHouse&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;
-        &lt;span class=&quot;n hot&quot;&gt;BI-built push&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;
-        &lt;span class=&quot;n hot&quot;&gt;HubSpot custom campaign object&lt;/span&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;chain&quot; style=&quot;margin-top:8px&quot;&gt;&lt;span class=&quot;n&quot;&gt;ClickHouse&lt;/span&gt;&lt;span class=&quot;a&quot;&gt;→&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Tableau for visualization&lt;/span&gt;&lt;/div&gt;
-      &lt;div class=&quot;pain&quot;&gt;
-        &lt;div&gt;Deals and companies in HubSpot don’t always match accounts in PX&lt;/div&gt;
-        &lt;div&gt;Net revenue and attribution depend on a pipeline the BI team maintains&lt;/div&gt;
-        &lt;div&gt;Publisher deals often sign but never produce revenue if the integration stalls&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
-&lt;/div&gt;
-&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="HubSpot today" srcdoc="&lt;!-- How PX uses HubSpot today: marketing and sales --&gt;
-&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;
---mkt:#6b3fd1;--mkt-t:#efe9fb;--sales:#1b6fd6;--sales-t:#e4eefb;--cs:#0f8a77;--cs-t:#e3f3ef;--hub:#ff7a59;--pain:#c2334d;--pain-t:#fbe9ec}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 26px;max-width:72ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 14px}
-section{margin-bottom:32px}
+  <section>
+    <h2>What this adds up to</h2>
+    <div class="quotes">
+      <div class="hq"><blockquote>“I can create reports in HubSpot all day long… it takes me sometimes more time than I really want to.”</blockquote><p>Insight depends on someone building reports or asking the right question.</p></div>
+      <div class="hq"><blockquote>“You have to enforce admin on commercial people.”</blockquote><p>Data quality depends on reps doing manual steps.</p></div>
+      <div class="hq"><blockquote>“There’s a bit of a disconnect between what we see in HubSpot and what we see in PX.”</blockquote><p>Revenue truth lives outside the CRM and arrives through a workaround.</p></div>
+      <div class="hq"><blockquote>“It’s always a bit of a fun discussion when you get to that nitty-gritty part of attributing the activities.”</blockquote><p>Marketing, sales and client success each claim credit, because spend and revenue live in different places.</p></div>
+    </div>
+  </section>
+</div>
+</div>
+<div class="view" id="s4">
+<div class="wrap">
+<h1>From connected workarounds to one platform</h1>
+<p class="lede">PX’s marketplace data stays where it is, in the PX platform and ClickHouse. What changes is how that data reaches the people who sell, manage and report on accounts.</p>
+<div class="states">
+ <div class="card state today"><h2>Today <span>Many connections to maintain</span></h2>
+  <div class="lane">
+   <div class="tier"><div class="t">Marketplace</div><div class="nodes"><div class="nd"><b>PX platform</b><small>Campaigns, leads, payouts</small></div><span class="ar">→</span><div class="nd"><b>ClickHouse</b><small>Campaign data store</small></div></div></div>
+   <div class="down">↓ BI-built push</div>
+   <div class="tier"><div class="t">CRM</div><div class="nodes"><div class="nd bad"><b>HubSpot</b><small>Custom campaign object, companies matched by name</small></div><span class="ar bad">⇄</span><div class="nd bad"><b>Monday.com</b><small>Unreliable connector</small></div></div></div>
+   <div class="tier"><div class="t">Marketing</div><div class="nodes"><div class="nd"><b>HubSpot Marketing Hub</b><small>Landing pages, forms, emails</small></div><div class="nd bad"><b>Blast tool</b><small>Separate system</small></div><div class="nd bad"><b>Ad platforms</b><small>Measured separately</small></div></div></div>
+   <div class="tier"><div class="t">Activity</div><div class="nodes"><div class="nd"><b>Zoom web</b><small>Auto-recorded</small></div><div class="nd bad"><b>Zoom phone</b><small>Manual upload</small></div><div class="nd bad"><b>Outlook</b><small>BCC fallback</small></div></div></div>
+   <div class="tier"><div class="t">Finance</div><div class="nodes"><div class="nd bad"><b>NetSuite</b><small>Billing and payments, siloed for finance</small></div></div></div>
+   <div class="tier"><div class="t">Insight</div><div class="nodes"><div class="nd"><b>Tableau</b><small>Reads ClickHouse separately</small></div><div class="nd"><b>Claude</b><small>Asked questions about HubSpot data</small></div><div class="nd bad"><b>Slack</b><small>Not connected to the CRM</small></div></div></div>
+  </div>
+  <div class="issues"><div>Revenue data depends on a pipeline the BI team maintains</div><div>Time goes to troubleshooting connectors instead of analyzing data</div><div>Insight only appears when someone builds a report or asks for it</div></div>
+ </div>
+ <div class="card state future"><h2>With Salesforce <span>One source, many surfaces</span></h2>
+  <div class="lane">
+   <div class="tier"><div class="t">Marketplace</div><div class="nodes"><div class="nd"><b>PX platform</b><small>Unchanged</small></div><span class="ar">→</span><div class="nd"><b>ClickHouse</b><small>Unchanged</small></div></div></div>
+   <div class="down">↓ API, matched on PX account ID</div>
+   <div class="tier"><div class="t">Unify</div><div class="nodes"><div class="nd dc"><b>Data Cloud</b><small>Campaign and net revenue data joined to accounts and deals</small></div></div></div>
+   <div class="down">↓</div>
+   <div class="tier"><div class="t">CRM</div><div class="nodes"><div class="nd core"><b>Sales Cloud and Service Cloud</b><small>Advertiser and publisher pipelines, net revenue on every account, integration cases</small></div></div></div>
+   <div class="tier"><div class="t">Marketing</div><div class="nodes"><div class="nd core"><b>Marketing Cloud</b><small>Pages, forms, email and journeys on the same net revenue data</small></div><div class="nd"><b>Ad platforms</b><small>Spend and audiences tied to sold leads</small></div></div></div>
+   <div class="tier"><div class="t">Activity</div><div class="nodes"><div class="nd"><b>Email and calendar</b><small>Captured automatically</small></div><div class="nd"><b>Calls</b><small>Recordings and transcripts attached</small></div></div></div>
+   <div class="tier"><div class="t">Finance</div><div class="nodes"><div class="nd"><b>NetSuite</b><small>Stays the finance system. Payment status flows to Salesforce and Slack</small></div></div></div>
+   <div class="tier"><div class="t">Where people work</div><div class="nodes"><div class="nd slack"><b>Slack</b><small>Alerts, deal updates, approvals</small></div><div class="nd"><b>Claude</b><small>Claude Force skills on trusted CRM data</small></div><div class="nd"><b>Tableau</b><small>One dataset for deep analysis</small></div></div></div>
+  </div>
+  <div class="issues"><div>One governed copy of net revenue, read by every tool</div><div>Fewer point-to-point connections to maintain</div><div>Marketing measured on the net revenue it produces</div><div>Insights are pushed to people in Slack and Claude</div></div>
+ </div>
+</div>
+<div class="card retire"><h2>What goes away</h2><div class="nodes">
+ <div class="nd gone">BI-built HubSpot push</div><div class="nd gone">Monday.com pipeline tracking</div><div class="nd gone">Name-based company matching</div><div class="nd gone">Separate email blast tool</div><div class="nd gone">Ad results reported in isolation</div><div class="nd gone">Payment status chased by email</div><div class="nd gone">BCC email logging</div><div class="nd gone">Manual call uploads</div><div class="nd gone">Quarterly manual projected-vs-actual review</div>
+</div></div>
+</div>
+</div>
+<div class="view" id="s5">
+<div class="wrap">
+  <h1>What PX needs, and what Salesforce delivers</h1>
+  <p class="lede">Four pillars drawn from our conversations with the PX team. Each one starts with what we heard, then shows the Salesforce capability and the outcome for the business.</p>
 
-/* seats */
-.seats{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:14px}
-.seat{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
-.seat .big{font-size:26px;font-weight:700;line-height:1}
-.seat .lbl{font-size:14px;font-weight:600;margin:6px 0 4px}
-.seat p{margin:0;font-size:13px;color:var(--muted);line-height:1.45}
-.seat.total{background:var(--ink);color:var(--white);border:0}
-.seat.total p{color:rgba(255,255,255,.78)}
+  <div class="cols"><div>What we heard</div><div>Salesforce pillar</div><div>Value to PX</div></div>
 
-/* journey */
-.journey{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
-.stage{display:flex;flex-direction:column;gap:8px}
-.stage .head{border-radius:10px;padding:10px 12px;color:var(--white);font-size:14px;font-weight:600;position:relative}
-.stage .head small{display:block;font-weight:400;font-size:12px;opacity:.85;margin-top:2px}
-.m .head{background:var(--mkt)} .s .head{background:var(--sales)} .c .head{background:var(--cs)}
-.box{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}
-.box ul{margin:0;padding-left:16px}
-.box li{margin-bottom:3px}
-.box.who{font-size:12px;color:var(--muted);background:transparent;border-style:dashed}
-.box.fr{background:var(--pain-t);border-color:#efc2cb}
-.box.fr b{color:var(--pain);font-size:12px;display:block;margin-bottom:3px}
-.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:0 0 14px}
-.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  <div class="row">
+    <div class="need">
+      <blockquote>“We don’t have a rolling net revenue insight per client.”</blockquote>
+      <p>Campaign data moves from ClickHouse into a HubSpot custom object through a pipeline the BI team maintains. Projected cohort values are checked against actuals by hand every quarter.</p>
+    </div>
+    <div class="pillar p1"><span class="arrow l"></span><span class="arrow r"></span>
+      <h2>One version of net revenue</h2>
+      <p>Data Cloud brings ClickHouse campaign data in through an API and unifies it with accounts and deals. Sales Cloud, Slack and Tableau all read from that single source.</p>
+    </div>
+    <div class="value v1">
+      <h3>Know what every deal is really worth</h3>
+      <ul>
+        <li>Live projected vs. actual net revenue by cohort, vertical and rep</li>
+        <li>Every marketing dollar tied to the net revenue it earns</li>
+        <li>Attribution from first touch to margin earned</li>
+        <li>Less pipeline upkeep for the BI team</li>
+      </ul>
+    </div>
+  </div>
 
-/* hub map */
-.hubmap{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:18px;align-items:center}
-.tools{display:grid;gap:10px}
-.tool{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.4}
-.tool b{display:block;font-size:14px;margin-bottom:2px}
-.tool .st{font-size:12px;color:var(--muted)}
-.tool.bad{border-left:4px solid var(--pain)}
-.tool.ok{border-left:4px solid var(--cs)}
-.hub{background:var(--white);border:2px solid var(--hub);border-radius:16px;padding:20px}
-.hub h3{margin:0 0 4px;font-size:18px}
-.hub .sub{font-size:13px;color:var(--muted);margin:0 0 14px}
-.objs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.obj{background:#fff4f0;border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.35}
-.obj b{display:block;font-size:13px}
-.obj.custom{background:#fff;border:1px dashed var(--hub)}
-.hub .adm{margin-top:12px;font-size:13px;color:var(--muted);line-height:1.45}
+  <div class="row">
+    <div class="need">
+      <blockquote>“I’m looking for something more output driven.”</blockquote>
+      <p>Building reports takes too long, the team still has to know what to ask Claude, and RevOps ends up chasing reps about stalled deals by hand.</p>
+    </div>
+    <div class="pillar p2"><span class="arrow l"></span><span class="arrow r"></span>
+      <span class="tag">The wow moment</span>
+      <h2>Insights that find you</h2>
+      <p>Claude Force skills and proactive signals arrive in Slack, Salesforce or Claude, grounded in trusted CRM data.</p>
+    </div>
+    <div class="value v2">
+      <h3>The system flags it, so people don’t have to</h3>
+      <ul>
+        <li>Alerts on stalled deals, sentiment drops and cohort shortfalls</li>
+        <li>Account briefs for GMs on demand</li>
+        <li>Time spent acting on insight instead of building reports</li>
+      </ul>
+    </div>
+  </div>
 
-.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.quote{border-top:3px solid var(--pain);padding-top:12px}
-.quote blockquote{margin:0 0 6px;font-family:&#x27;Newsreader&#x27;,Georgia,serif;font-style:italic;font-size:19px;line-height:1.3}
-.quote p{margin:0;font-size:13px;color:var(--muted)}
+  <div class="row">
+    <div class="need">
+      <blockquote>“The more we have sales people do admin, the less they’ll do sales.”</blockquote>
+      <p>Inbound Zoom calls need a manual upload, email logging depends on BCC, and stage updates get skipped.</p>
+    </div>
+    <div class="pillar p3"><span class="arrow l"></span><span class="arrow r"></span>
+      <h2>Sellers sell, the system does the admin</h2>
+      <p>Activity is captured automatically, and reps update deals from inside Slack, where they already work.</p>
+    </div>
+    <div class="value v3">
+      <h3>Better data with less effort</h3>
+      <ul>
+        <li>Adoption without constant enforcement</li>
+        <li>Cleaner pipeline and forecast</li>
+        <li>More selling time for a 25–30 person commercial team</li>
+      </ul>
+    </div>
+  </div>
 
-@media(max-width:1000px){.journey{grid-template-columns:repeat(3,1fr)}.seats{grid-template-columns:1fr 1fr}.hubmap{grid-template-columns:1fr}.quotes{grid-template-columns:1fr}}
-@media(max-width:620px){.journey,.seats{grid-template-columns:1fr}}
-&lt;/style&gt;
-&lt;div class=&quot;wrap&quot;&gt;
-  &lt;h1&gt;How PX uses HubSpot today&lt;/h1&gt;
-  &lt;p class=&quot;lede&quot;&gt;HubSpot is PX’s system of record for marketing, sales and client success. The team is centralizing more into it every quarter, while campaign and revenue data still arrives from outside through workarounds. This is our read of the current state, drawn from our conversations. Please correct anything we got wrong.&lt;/p&gt;
+  <div class="row">
+    <div class="need">
+      <blockquote>“Our business is very unique… two businesses in one.”</blockquote>
+      <p>A two-sided marketplace in a one-sided CRM. Three pricing models with no playbook, and publisher deals that sign but never go live.</p>
+    </div>
+    <div class="pillar p4"><span class="arrow l"></span><span class="arrow r"></span>
+      <h2>Built for a marketplace</h2>
+      <p>Advertiser and publisher motions on one platform, guided deal structuring across margin, platform-fee and CPA models, and publisher onboarding tracked to first revenue, with nurture and onboarding journeys that move both sides forward automatically.</p>
+    </div>
+    <div class="value v4">
+      <h3>Grow both sides of the market</h3>
+      <ul>
+        <li>Margin protected on every deal</li>
+        <li>Faster time to first revenue for publishers</li>
+        <li>Fewer signed deals that never earn</li>
+        <li>Marketing that keeps buyers and publishers moving, not just sales</li>
+      </ul>
+    </div>
+  </div>
 
-  &lt;section&gt;
-    &lt;h2&gt;Who is in HubSpot&lt;/h2&gt;
-    &lt;div class=&quot;seats&quot;&gt;
-      &lt;div class=&quot;seat total&quot;&gt;&lt;div class=&quot;big&quot;&gt;All teams&lt;/div&gt;&lt;div class=&quot;lbl&quot;&gt;Users in total&lt;/div&gt;&lt;p&gt;PX moved to HubSpot’s per-seat model in late August, and the renewal is in December.&lt;/p&gt;&lt;/div&gt;
-      &lt;div class=&quot;seat&quot;&gt;&lt;div class=&quot;big&quot;&gt;Most&lt;/div&gt;&lt;div class=&quot;lbl&quot;&gt;Core seats&lt;/div&gt;&lt;p&gt;Can view and edit records. This covers most of the commercial team and their support staff.&lt;/p&gt;&lt;/div&gt;
-      &lt;div class=&quot;seat&quot;&gt;&lt;div class=&quot;big&quot;&gt;Fewer&lt;/div&gt;&lt;div class=&quot;lbl&quot;&gt;Sales and service seats&lt;/div&gt;&lt;p&gt;Needed for sequences, the sales workspace and sentiment reporting. They cost more than a core seat, so they go only to people who need them.&lt;/p&gt;&lt;/div&gt;
-      &lt;div class=&quot;seat&quot;&gt;&lt;div class=&quot;big&quot;&gt;Unlimited&lt;/div&gt;&lt;div class=&quot;lbl&quot;&gt;View-only seats&lt;/div&gt;&lt;p&gt;For people who check records but don’t make changes.&lt;/p&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
+  <div class="base">
+    <strong>The foundation</strong>
+    <span>Already on Slack and Tableau with Salesforce</span>
+    <span>One relationship, one contract</span>
+    <span>Room to scale past HubSpot’s limits</span>
+    <span>A rollout sized for a lean team</span>
+  </div>
+</div>
+</div>
+<div class="view" id="s6">
+<div class="wrap">
+  <h1>Slack as the front door to PX’s data</h1>
+  <p class="lede">Everyone at PX already works in Slack. With Salesforce behind it, the questions people ask each other every day get answered there directly, with dashboards built from a plain-language request.</p>
+  <span class="illus">Illustrative example with sample data</span>
+  <div class="sg">
+    <div class="win"><div class="bar"># leadership</div><div class="msgs">
+      <div class="m"><div class="av u">GM</div><div><div class="who">General manager <small>9:02 AM</small></div>Show Q3 net revenue by vertical against projection, and flag anything more than 10% behind.</div></div>
+      <div class="m"><div class="av s">SF</div><div><div class="who">Slackbot <small>9:02 AM · from Salesforce and Data Cloud</small></div>Here’s Q3 so far. Two verticals are behind projection.
+        <div class="surf"><div class="t">Q3 net revenue vs. projection</div>
+          <div class="b"><span>Home services</span><div class="trk"><div class="pj u0a"></div><div class="lo u0b"></div></div><span>−13%</span></div>
+          <div class="b"><span>Education</span><div class="trk"><div class="pj u1a"></div><div class="ac u1b"></div></div><span>+6%</span></div>
+          <div class="b"><span>Financial services</span><div class="trk"><div class="pj u2a"></div><div class="lo u2b"></div></div><span>−20%</span></div>
+          <div class="b"><span>Aged data</span><div class="trk"><div class="pj u3a"></div><div class="ac u3b"></div></div><span>+11%</span></div>
+          <div class="leg">Grey is projected, blue is actual, red is more than 10% behind</div>
+        </div>
+        <span class="chip">Break down by rep</span><span class="chip">Add pricing model</span><span class="chip">Share to channel</span></div></div>
+      <div class="m"><div class="av u">PA</div><div><div class="who">Publisher account manager <small>9:14 AM</small></div>Did Publisher B get paid for September?</div></div>
+      <div class="m"><div class="av s">SF</div><div><div class="who">Slackbot <small>9:14 AM · from NetSuite via Salesforce</small></div>
+        <div class="pay"><b>Yes, paid September 30.</b> $12,480, with two return adjustments ($320) deducted from the invoice total.<small>Invoice and adjustment detail is on the account in Salesforce</small></div></div></div>
+    </div></div>
+    <div class="why">
+      <div class="card"><b>No new tool to adopt</b>The answers arrive where everyone already works, so adoption isn’t a project.</div>
+      <div class="card"><b>Plain language to dashboards</b>Ask for a forecast or a view, then refine it by asking again. No report building.</div>
+      <div class="card"><b>One source behind every answer</b>CRM, PX platform data through Data Cloud, and NetSuite payment status.</div>
+      <div class="card"><b>Permissions respected</b>People only see what their Salesforce access allows, in Slack, Claude or Salesforce.</div>
+      <div class="card"><b>Fewer status pings</b>“Where are we with this?” and “Did they get paid?” get answered without waiting on a person.</div>
+      <div class="wq"><p class="quote">“If we had it in Slack, that’s where now everything’s centralized in a tool that everybody uses.”</p><p>PX, on seeing Slack surfaces</p></div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="view" id="s7">
+<div class="wrap">
+  <h1>One marketing system, powered by PX’s marketplace data</h1>
+  <p class="lede">Every marketing dollar connected to the net revenue it produces, on both sides of the market.</p>
+  <div class="themes">
+    <div class="th t1"><div class="n">1</div><h2>Grow both sides</h2><p>Move buyers, publishers and PX Local sign-ups to revenue faster, with journeys that respond to what each one actually does.</p></div>
+    <div class="th t2"><div class="n">2</div><h2>Spend for margin</h2><p>Know what every media dollar earns in net revenue, then shift budget, audiences and bids toward what works.</p></div>
+    <div class="th later"><div class="n">3</div><h2>Be found in AI answers</h2><p>Understand how AI assistants describe PX to buyers and publishers, and what shapes those answers.</p><span class="tag">To explore in the marketing session</span></div>
+  </div>
+  <div class="cmp">
+    <div class="card today"><h3>Today</h3><p>HubSpot, a separate blast tool, ad platforms measured on their own, and a ClickHouse to HubSpot workaround for revenue. Marketing is judged after the fact.</p></div>
+    <div class="card with"><h3>With Salesforce</h3><p>One record for every buyer and publisher. Marketing measured on net revenue by vertical and source, and acted on automatically.</p></div>
+  </div>
+  <div class="row2b">
+    <div class="card ins"><div class="what">Roofing, Texas <span class="illus">Illustrative</span></div><p>Net revenue is up this quarter, and paid search drove most of it. Suggested move: shift budget toward exclusive roofing lead campaigns.</p></div>
+    <div class="card"><h2>A simpler stack</h2><div class="stack"><span>Marketing Hub</span><span>Brand add-on</span><span>Dedicated IP</span><span>Separate blast tool</span><b>→</b><span class="one">One marketing system</span></div></div>
+  </div>
+  <div class="q"><p class="quote">“The evaluation would be where we centralize all that spend, and identify exactly where our output is most effective.”</p><p>PX, on paid media today</p></div>
+</div>
+</div>
+<div class="view" id="s8">
+<div class="wrap">
+<h1>Monday morning for a PX general manager</h1>
+<p class="lede">The same questions, answered two ways. Today the GM goes looking for problems. With Salesforce the problems come to them.</p>
+<span class="illus">Illustrative example with sample accounts and times</span>
+<div class="ba">
+ <div class="card col before"><h2>Today <em>About 2 hours</em></h2>
+  <ul class="steps">
+   <li><span class="tm">8:00</span><span class="tx">Open HubSpot and build a pipeline report for the vertical<small>Filters rebuilt by hand each week</small></span></li>
+   <li><span class="tm">8:30</span><span class="tx">Ask Claude which deals look stalled and what sentiment looks like<small>Needs the right questions, one at a time</small></span></li>
+   <li><span class="tm">9:00</span><span class="tx">Check Tableau for net revenue by client<small>A separate tool, a separate dataset</small></span></li>
+   <li><span class="tm">9:30</span><span class="tx">Cross-check publisher go-live status<small>Scattered across tickets and notes</small></span></li>
+   <li><span class="tm">9:45</span><span class="tx">Message reps one by one about stalled deals<small>The GM or RevOps becomes the enforcer</small></span></li>
+  </ul>
+ </div>
+ <div class="card col after"><h2>With Salesforce <em>About 15 minutes</em></h2>
+  <div class="slackmsg"><div class="sh"># home-services-pipeline</div><div class="sb">
+   <div class="from">Weekly pipeline brief <small>8:00 AM · from Salesforce</small></div>
+   <div class="flag"><span class="dot u9"></span><span><b>3 deals stalled</b> for more than 21 days in negotiation, worth $84K in projected net revenue</span><span class="btn">Review</span></div>
+   <div class="flag"><span class="dot u10"></span><span><b>Publisher B</b> signed 38 days ago and hasn’t sent test leads</span><span class="btn">Nudge AM</span></div>
+   <div class="flag"><span class="dot u10"></span><span><b>Q3 cohort</b> is tracking 22% below its projected net revenue</span><span class="btn">Open view</span></div>
+   <div class="flag"><span class="dot u11"></span><span><b>Advertiser A</b> sentiment dropped after the last two calls</span><span class="btn">Brief me</span></div>
+   <div class="flag"><span class="dot u12"></span><span><b>Advertiser C</b> is buying above plan, which makes it a candidate for a calls expansion</span><span class="btn">Create deal</span></div>
+  </div></div>
+  <div class="claude"><div class="q">Brief me on Advertiser A before Thursday’s call</div>
+   <b>Advertiser A: renewal risk is moderate</b>
+   <ul><li>Net revenue is down 15% over 60 days, as lead volume shifted to a competitor</li><li>The last two calls raised concerns about lead quality in two states</li><li>Suggested next step: review state filters and offer a CPA pilot</li></ul>
+  </div>
+ </div>
+</div>
+<div class="foot">
+ <div class="card"><b>Pushed, not pulled</b><span>Signals arrive where the team already works</span></div>
+ <div class="card"><b>One source</b><span>CRM activity and PX net revenue in the same view</span></div>
+ <div class="card"><b>The system nudges reps</b><span>Leadership stops chasing people for updates</span></div>
+</div>
+</div>
+</div>
+<div class="view" id="s9">
+<div class="wrap">
+<h1>A data model built for two businesses in one</h1>
+<p class="lede">A starting point to validate together, not a finished design. It shows how advertisers, publishers, campaigns and net revenue can live in one connected model, so nothing is matched by company name.</p>
+<div class="legend"><span><i class="u13"></i>Standard Salesforce object</span><span><i class="u11"></i>Custom object for PX</span><span><i class="u12"></i>Service</span><span><i class="lgfin"></i>Connected system</span></div>
+<div class="dm">
+ <div class="ob std"><div class="h">Account<small>One record per company</small></div><ul>
+  <li><b>Record type:</b> Advertiser or Publisher</li><li><b>PX account ID:</b> the key to PX data</li><li>Vertical, segment and owner</li><li>Rolling net revenue, 30/90/365 days</li></ul></div>
+ <div class="ob std"><div class="h">Opportunity<small>New business and expansion</small></div><ul>
+  <li><b>Pipelines:</b> advertiser, publisher, expansion</li><li><b>Pricing model:</b> margin, platform fee or CPA</li><li>Projected 12-month net revenue from the cohort default</li><li>Actual net revenue to date, and the variance</li></ul></div>
+ <div class="ob cus"><div class="h">PX Campaign<small>Mirrors each campaign in the PX platform</small></div><ul>
+  <li>Linked to its account and deal</li><li>Vertical, states, hours and filters</li><li>Status: testing, live, paused</li><li>PX campaign ID</li></ul></div>
+ <div class="ob std"><div class="h">Contact<small>People at each account</small></div><ul>
+  <li>Marketing touch history</li><li>Original lead source for attribution</li><li>Email and calls captured automatically</li></ul></div>
+ <div class="ob cus"><div class="h">Onboarding milestones<small>Mainly for publishers</small></div><ul>
+  <li>Signed, docs sent, integrating, test leads, live, first revenue</li><li>Date each milestone is reached, and time spent in each step</li><li>Alerts when a step stalls</li></ul></div>
+ <div class="ob cus"><div class="h">Campaign performance<small>A monthly roll-up from ClickHouse</small></div><ul>
+  <li>Period and lead volume</li><li>Gross spend and publisher payout</li><li><b>PX net revenue</b></li><li>Aggregated, never lead-level</li></ul></div>
+ <div class="ob svc span2"><div class="h">Case<small>Client integration conversations, replacing Jira and HubSpot tickets</small></div><ul>
+  <li>Linked to the account, and to an onboarding milestone when relevant</li><li>Sentiment and time-to-resolution feed account health</li></ul></div>
+ <div class="ob fin"><div class="h">Invoices and payments<small>Synced from NetSuite</small></div><ul>
+  <li>Invoice, amount and paid date</li><li>Adjustments and returns</li><li>Visible on the account and in Slack</li><li>Finance keeps NetSuite as the source</li></ul></div>
+ <div class="rel">Account → Opportunity → PX Campaign → Campaign performance<br>Account → Contact, Case, Onboarding, Invoices and payments</div>
+</div>
+<div class="why">
+ <div class="card"><b>Matched on ID, not name</b>The PX account ID ends the disconnect between CRM companies and PX accounts.</div>
+ <div class="card"><b>Aggregates in the CRM, detail in ClickHouse</b>The CRM holds what sellers need, while raw marketplace data stays in ClickHouse.</div>
+ <div class="card"><b>Both sides, one model</b>Advertiser and publisher motions share one structure, so leadership sees the whole market.</div>
+</div>
+</div>
+</div>
+<div class="view" id="s10">
+<div class="wrap">
+<h1>Projected vs. actual net revenue, live</h1>
+<p class="lede">Every deal already carries a projected 12-month net revenue from its cohort default. With PX campaign data joined to accounts and deals, the comparison to actuals updates daily instead of once a quarter, by vertical, cohort or rep.</p>
+<span class="illus">Illustrative data, not PX figures</span>
+<div class="kpis">
+ <div class="card kpi"><div class="v">$4.34M</div><div class="l">Projected 12-month net revenue, 2026 deals</div></div>
+ <div class="card kpi"><div class="v">$3.99M</div><div class="l">Actual net revenue, annualized to date</div></div>
+ <div class="card kpi"><div class="v neg">-8%</div><div class="l">Variance to projection</div></div>
+ <div class="card kpi"><div class="v">2</div><div class="l">Cohorts flagged for a default review</div></div>
+</div>
+<div class="grid">
+ <div class="card"><h2>By vertical</h2><div class="leg"><span><i class="u14"></i>Projected</span><span><i class="u13"></i>Actual</span><span><i class="u9"></i>More than 10% below</span></div><div class="br"><div class="bl">Home services</div><div class="bt"><div class="p u15"></div><div class="a lo u16"></div></div><div class="bv">$1260K / $1092K</div></div><div class="br"><div class="bl">Education</div><div class="bt"><div class="p u17"></div><div class="a  u18"></div></div><div class="bv">$980K / $1034K</div></div><div class="br"><div class="bl">Financial services</div><div class="bt"><div class="p u19"></div><div class="a lo u20"></div></div><div class="bv">$640K / $512K</div></div><div class="br"><div class="bl">Health insurance and Medicare</div><div class="bt"><div class="p u21"></div><div class="a  u22"></div></div><div class="bv">$870K / $801K</div></div><div class="br"><div class="bl">Aged data</div><div class="bt"><div class="p u23"></div><div class="a  u24"></div></div><div class="bv">$410K / $455K</div></div><div class="br"><div class="bl">Mortgage</div><div class="bt"><div class="p u25"></div><div class="a lo u26"></div></div><div class="bv">$180K / $97K</div></div></div>
+ <div class="card"><h2>Cohort detail</h2><table><tr><th>Vertical</th><th>Deals</th><th>Projected</th><th>Actual</th><th>Var.</th><th></th></tr><tr><td>Home services</td><td>42</td><td>$1260K</td><td>$1092K</td><td class="neg">-13%</td><td><span class=fl>Review cohort default</span></td></tr><tr><td>Education</td><td>28</td><td>$980K</td><td>$1034K</td><td class="pos">+6%</td><td><span class=ok>Above plan</span></td></tr><tr><td>Financial services</td><td>19</td><td>$640K</td><td>$512K</td><td class="neg">-20%</td><td><span class=fl>Review cohort default</span></td></tr><tr><td>Health insurance and Medicare</td><td>23</td><td>$870K</td><td>$801K</td><td class="neg">-8%</td><td><span class=ok>On track</span></td></tr><tr><td>Aged data</td><td>31</td><td>$410K</td><td>$455K</td><td class="pos">+11%</td><td><span class=ok>Above plan</span></td></tr><tr><td>Mortgage</td><td>8</td><td>$180K</td><td>$97K</td><td class="neg">-46%</td><td><span class=fl>Review cohort default</span></td></tr></table>
+ <p class="note">The same view filters by rep, pricing model (margin, platform fee, CPA) and original lead source, so marketing attribution runs from first touch to net revenue earned.</p></div>
+</div>
+</div>
+</div>
+<div class="view" id="s11">
+<div class="wrap">
+  <h1>Know what every media dollar earns, then optimize it</h1>
+  <p class="lede">PX’s own acquisition spend, connected through to the leads it generated, the deals they became and the net revenue those deals produce.</p>
+  <div class="loop">
+    <div class="st"><b>Ad spend</b><small>Google, Meta, LinkedIn</small></div>
+    <div class="st"><b>Leads</b><small>Form fills and sign-ups</small></div>
+    <div class="st"><b>Deals</b><small>By buyer, publisher and vertical</small></div>
+    <div class="st rev"><b>Net revenue</b><small>From ClickHouse</small></div>
+  </div>
+  <div class="back">Net revenue flows back into budget, bidding and audiences</div>
+  <span class="illus">Illustrative data, not PX figures</span>
+  <div class="g2">
+    <div class="card"><h2>This month by channel, home services</h2>
+      <table><tr><th>Channel</th><th>Spend</th><th>Leads</th><th>Deals</th><th>Cost per deal</th><th>Net revenue</th><th>Trend</th></tr>
+      <tr><td>Paid search</td><td>$18,000</td><td>240</td><td>12</td><td>$1,500</td><td>$96,000</td><td class="dn">Cost down 8%</td></tr>
+      <tr><td>Meta</td><td>$14,000</td><td>310</td><td>7</td><td>$2,000</td><td>$42,000</td><td class="up">Cost up 22%</td></tr>
+      <tr><td>LinkedIn</td><td>$9,000</td><td>60</td><td>5</td><td>$1,800</td><td>$55,000</td><td class="dn">Steady</td></tr>
+      <tr><td>Webinars and events</td><td>$6,000</td><td>45</td><td>4</td><td>$1,500</td><td>$38,000</td><td class="dn">Steady</td></tr></table>
+    </div>
+    <div class="card alert"><div class="what">Home services, Meta</div>
+      <p><b>Cost per deal is up 22% this week</b>, while paid search is 25% cheaper per deal.</p>
+      <p>Suggested move: shift $4K to paid search. 38 existing buyers were removed from acquisition audiences.</p>
+    </div>
+  </div>
+  <div class="soa">
+    <div class="card"><b>See it</b>Every channel in one view, with pacing and alerts, and no exports.</div>
+    <div class="card"><b>Optimize it</b>Flags underperforming campaigns and where to shift budget, by vertical and source.</div>
+    <div class="card"><b>Act on it</b>Suppress existing buyers, retarget abandoned forms, and build audiences from high-value accounts.</div>
+  </div>
+  <div class="tw"><div class="a"><b>Today:</b> results arrive after the fact, once reports are rebuilt.</div><div class="b"><b>With Salesforce:</b> the same day, by vertical and source, with alerts.</div></div>
+</div>
+</div>
+<div class="view" id="s12">
+<div class="wrap">
+<h1>Onboarding journeys, tracked to first revenue</h1>
+<p class="lede">On the supply side, a signed agreement isn’t the finish line. Publishers do their own integration, and many signed deals never produce net revenue. Tracking each milestone shows where they stall and prompts the right person to act.</p>
+<span class="illus">Illustrative numbers for a year of signed publisher deals</span>
+<div class="g">
+ <div class="card"><h2>Where signed publishers drop off</h2>
+  <div class="fh"><div>Milestone</div><div>Publishers</div><div>Avg. time in step</div></div>
+  <div class="frow"><div class="fn">Agreement signed</div><div class="fb"><div class="f  u27">40</div></div><div class="fd">—</div></div><div class="frow"><div class="fn">API docs sent</div><div class="fb"><div class="f  u28">37</div></div><div class="fd">3 days</div></div><div class="frow"><div class="fn">Integration in progress</div><div class="fb"><div class="f warn u29">30</div></div><div class="fd">19 days</div></div><div class="frow"><div class="fn">Test leads received</div><div class="fb"><div class="f bad u30">19</div></div><div class="fd">24 days</div></div><div class="frow"><div class="fn">Live in marketplace</div><div class="fb"><div class="f  u31">16</div></div><div class="fd">6 days</div></div><div class="frow"><div class="fn">First net revenue</div><div class="fb"><div class="f  u32">13</div></div><div class="fd">11 days</div></div>
+  <div class="leak"><b>27 of 40 signed publishers</b> never reach first net revenue. Most of that drop happens during integration, before any test leads arrive.</div>
+ </div>
+ <div class="card"><h2>How Salesforce closes the gap</h2><div class="tr">
+  <div class="it"><b>A milestone on every publisher deal</b>From signature through test leads and go-live to first net revenue, all visible in one view</div>
+  <div class="it"><b>Automatic onboarding nudges</b>Integration docs and reminders go to the publisher as soon as a step stalls, with no manual follow-up</div>
+  <div class="it"><b>Alerts when a step stalls</b>For example, no test leads 21 days after the docs were sent, posted to the publisher account manager in Slack</div>
+  <div class="it"><b>First revenue confirmed from PX data</b>Net revenue from ClickHouse marks the deal as earning, with no manual update</div>
+  <div class="it"><b>Focus on the right publishers</b>Supply-side leaders see which signed publishers are worth the push, based on the demand advertisers need</div>
+ </div></div>
+</div>
 
-  &lt;section&gt;
-    &lt;h2&gt;The journey, from first touch to net revenue&lt;/h2&gt;
-    &lt;div class=&quot;legend&quot;&gt;&lt;span&gt;&lt;i style=&quot;background:var(--mkt)&quot;&gt;&lt;/i&gt;Marketing&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;background:var(--sales)&quot;&gt;&lt;/i&gt;Sales&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;background:var(--cs)&quot;&gt;&lt;/i&gt;Client success&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;background:var(--pain-t);border:1px solid #efc2cb&quot;&gt;&lt;/i&gt;Where it breaks down&lt;/span&gt;&lt;/div&gt;
-    &lt;div class=&quot;journey&quot;&gt;
-      &lt;div class=&quot;stage m&quot;&gt;
-        &lt;div class=&quot;head&quot;&gt;Attract&lt;small&gt;Build awareness&lt;/small&gt;&lt;/div&gt;
-        &lt;div class=&quot;box&quot;&gt;&lt;ul&gt;&lt;li&gt;LinkedIn posts, promotion and webinars&lt;/li&gt;&lt;li&gt;LeadsCon sponsorship twice a year, plus vertical shows&lt;/li&gt;&lt;li&gt;Google Ads for aged data&lt;/li&gt;&lt;li&gt;ZoomInfo research on target contacts&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
-        &lt;div class=&quot;box who&quot;&gt;Marketing team, plus a separate ad-buying team for Meta and Google&lt;/div&gt;
-        &lt;div class=&quot;box fr&quot;&gt;&lt;b&gt;Friction&lt;/b&gt;Ad spend is optimized outside HubSpot and measured separately.&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;stage m&quot;&gt;
-        &lt;div class=&quot;head&quot;&gt;Capture&lt;small&gt;Landing pages and forms&lt;/small&gt;&lt;/div&gt;
-        &lt;div class=&quot;box&quot;&gt;&lt;ul&gt;&lt;li&gt;HubSpot landing pages and lead forms&lt;/li&gt;&lt;li&gt;A handful of form fills a day&lt;/li&gt;&lt;li&gt;Over 60,000 contacts&lt;/li&gt;&lt;li&gt;Marketing emails sent to client and prospect segments&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
-        &lt;div class=&quot;box who&quot;&gt;Large email blasts go through a separate tool to protect sender reputation&lt;/div&gt;
-        &lt;div class=&quot;box fr&quot;&gt;&lt;b&gt;Friction&lt;/b&gt;Campaigns are built by hand. Beyond sequences, there is little automation.&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;stage s&quot;&gt;
-        &lt;div class=&quot;head&quot;&gt;Assign&lt;small&gt;Rules of engagement&lt;/small&gt;&lt;/div&gt;
-        &lt;div class=&quot;box&quot;&gt;&lt;ul&gt;&lt;li&gt;Each form fill is routed to the sales director for its vertical&lt;/li&gt;&lt;li&gt;There are no SDRs now, since PX moved away from that model&lt;/li&gt;&lt;li&gt;Separate pipelines for advertisers and publishers&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
-        &lt;div class=&quot;box who&quot;&gt;3 advertiser sales directors, and 2 on the publisher side&lt;/div&gt;
-        &lt;div class=&quot;box fr&quot;&gt;&lt;b&gt;Friction&lt;/b&gt;The playbook leaves a lot of gray areas, so follow-up varies from rep to rep.&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;stage s&quot;&gt;
-        &lt;div class=&quot;head&quot;&gt;Work the deal&lt;small&gt;Outreach and qualification&lt;/small&gt;&lt;/div&gt;
-        &lt;div class=&quot;box&quot;&gt;&lt;ul&gt;&lt;li&gt;Sequences built from pre-approved templates&lt;/li&gt;&lt;li&gt;Prospects who go dark are added to a sequence&lt;/li&gt;&lt;li&gt;Zoom web calls are recorded and transcribed automatically&lt;/li&gt;&lt;li&gt;Email is logged through connected inboxes&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
-        &lt;div class=&quot;box who&quot;&gt;Sales directors, with GMs overseeing each vertical&lt;/div&gt;
-        &lt;div class=&quot;box fr&quot;&gt;&lt;b&gt;Friction&lt;/b&gt;Inbound Zoom phone calls must be downloaded and uploaded by hand. Some email logging depends on BCC. Stage updates get skipped.&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;stage s&quot;&gt;
-        &lt;div class=&quot;head&quot;&gt;Close&lt;small&gt;Deal and projected value&lt;/small&gt;&lt;/div&gt;
-        &lt;div class=&quot;box&quot;&gt;&lt;ul&gt;&lt;li&gt;Standard agreement goes through legal&lt;/li&gt;&lt;li&gt;The model is margin, platform fee or CPA&lt;/li&gt;&lt;li&gt;Each deal carries a projected 12-month net revenue from a cohort default, which the rep can edit&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
-        &lt;div class=&quot;box who&quot;&gt;The sales director picks the pricing model based on experience&lt;/div&gt;
-        &lt;div class=&quot;box fr&quot;&gt;&lt;b&gt;Friction&lt;/b&gt;There is no guided playbook for choosing the model. Stalled deals are reviewed by hand.&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;stage c&quot;&gt;
-        &lt;div class=&quot;head&quot;&gt;Grow and measure&lt;small&gt;Onboarding to expansion&lt;/small&gt;&lt;/div&gt;
-        &lt;div class=&quot;box&quot;&gt;&lt;ul&gt;&lt;li&gt;CSMs and specialists create expansion deals&lt;/li&gt;&lt;li&gt;Integration tickets are moving from Jira into HubSpot&lt;/li&gt;&lt;li&gt;Net revenue is attributed back to the first touch&lt;/li&gt;&lt;li&gt;Projected vs. actual is reviewed each quarter&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
-        &lt;div class=&quot;box who&quot;&gt;2–3 CSMs per vertical, supported by specialists&lt;/div&gt;
-        &lt;div class=&quot;box fr&quot;&gt;&lt;b&gt;Friction&lt;/b&gt;Publisher deals stall at integration. Net revenue arrives through a BI-built push.&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
-
-  &lt;section&gt;
-    &lt;h2&gt;What lives in HubSpot, and what connects to it&lt;/h2&gt;
-    &lt;div class=&quot;hubmap&quot;&gt;
-      &lt;div class=&quot;tools&quot;&gt;
-        &lt;div class=&quot;tool ok&quot;&gt;&lt;b&gt;Zoom web meetings&lt;/b&gt;&lt;span class=&quot;st&quot;&gt;Recorded, transcribed and linked to meetings on connected calendars&lt;/span&gt;&lt;/div&gt;
-        &lt;div class=&quot;tool bad&quot;&gt;&lt;b&gt;Zoom phone (inbound)&lt;/b&gt;&lt;span class=&quot;st&quot;&gt;Recordings and transcripts are uploaded by hand&lt;/span&gt;&lt;/div&gt;
-        &lt;div class=&quot;tool bad&quot;&gt;&lt;b&gt;Outlook email&lt;/b&gt;&lt;span class=&quot;st&quot;&gt;Connected inboxes, with BCC as a fallback. Logging isn’t always consistent.&lt;/span&gt;&lt;/div&gt;
-        &lt;div class=&quot;tool ok&quot;&gt;&lt;b&gt;Claude&lt;/b&gt;&lt;span class=&quot;st&quot;&gt;Connected to HubSpot and open to everyone for deal tracking, sentiment and reporting&lt;/span&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;hub&quot;&gt;
-        &lt;h3&gt;HubSpot&lt;/h3&gt;
-        &lt;p class=&quot;sub&quot;&gt;PX’s CRM for marketing, sales and client success&lt;/p&gt;
-        &lt;div class=&quot;objs&quot;&gt;
-          &lt;div class=&quot;obj&quot;&gt;&lt;b&gt;Contacts&lt;/b&gt;Over 60K, with marketing touch history&lt;/div&gt;
-          &lt;div class=&quot;obj&quot;&gt;&lt;b&gt;Companies&lt;/b&gt;Created by sales and marketing, and matched to PX accounts by name&lt;/div&gt;
-          &lt;div class=&quot;obj&quot;&gt;&lt;b&gt;Deals&lt;/b&gt;Separate advertiser and publisher pipelines, plus projected net revenue&lt;/div&gt;
-          &lt;div class=&quot;obj&quot;&gt;&lt;b&gt;Tickets&lt;/b&gt;Client integration conversations, moving over from Jira&lt;/div&gt;
-          &lt;div class=&quot;obj custom&quot;&gt;&lt;b&gt;Campaigns (custom)&lt;/b&gt;A copy of each PX campaign, linked to its deal and company, carrying net revenue&lt;/div&gt;
-          &lt;div class=&quot;obj custom&quot;&gt;&lt;b&gt;Other custom objects and workflows&lt;/b&gt;Built up over years to fit a two-sided business&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;p class=&quot;adm&quot;&gt;Administered by Jeroen and one direct report. HubSpot’s built-in AI agents summarize accounts and suggest next steps, but the output is often noisy.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;tools&quot;&gt;
-        &lt;div class=&quot;tool bad&quot;&gt;&lt;b&gt;ClickHouse&lt;/b&gt;&lt;span class=&quot;st&quot;&gt;Pushes PX campaign and net revenue data into HubSpot through an automation the BI team maintains&lt;/span&gt;&lt;/div&gt;
-        &lt;div class=&quot;tool ok&quot;&gt;&lt;b&gt;Tableau&lt;/b&gt;&lt;span class=&quot;st&quot;&gt;Visualizes ClickHouse data for deeper analysis by vertical and client&lt;/span&gt;&lt;/div&gt;
-        &lt;div class=&quot;tool bad&quot;&gt;&lt;b&gt;Monday.com&lt;/b&gt;&lt;span class=&quot;st&quot;&gt;Some pipeline tracking is being pulled back into HubSpot because the connectors were unreliable&lt;/span&gt;&lt;/div&gt;
-        &lt;div class=&quot;tool ok&quot;&gt;&lt;b&gt;Slack&lt;/b&gt;&lt;span class=&quot;st&quot;&gt;Where the team works day to day, but not connected to the CRM workflow&lt;/span&gt;&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
-
-  &lt;section&gt;
-    &lt;h2&gt;What this adds up to&lt;/h2&gt;
-    &lt;div class=&quot;quotes&quot;&gt;
-      &lt;div class=&quot;quote&quot;&gt;&lt;blockquote&gt;“I can create reports in HubSpot all day long… it takes me sometimes more time than I really want to.”&lt;/blockquote&gt;&lt;p&gt;Insight depends on someone building reports or asking the right question.&lt;/p&gt;&lt;/div&gt;
-      &lt;div class=&quot;quote&quot;&gt;&lt;blockquote&gt;“You have to enforce admin on commercial people.”&lt;/blockquote&gt;&lt;p&gt;Data quality depends on reps doing manual steps.&lt;/p&gt;&lt;/div&gt;
-      &lt;div class=&quot;quote&quot;&gt;&lt;blockquote&gt;“There’s a bit of a disconnect between what we see in HubSpot and what we see in PX.”&lt;/blockquote&gt;&lt;p&gt;Revenue truth lives outside the CRM and arrives through a workaround.&lt;/p&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
-&lt;/div&gt;
-&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="Future-state architecture" srcdoc="&lt;!-- Future-state architecture --&gt;&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;--blue:#1b6fd6;--blue-t:#e4eefb;--violet:#6b3fd1;--violet-t:#efe9fb;--teal:#0f8a77;--teal-t:#e3f3ef;--amber:#c46a12;--amber-t:#fbeedf;--pain:#c2334d;--pain-t:#fbe9ec;--slack:#4a154b}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 26px;max-width:72ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 12px}
-.illus{display:inline-block;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:3px 10px;margin-bottom:14px}
-.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
-&lt;/style&gt;&lt;style&gt;
-.states{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.state h2{display:flex;align-items:center;gap:10px}
-.state h2 span{font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px}
-.today h2 span{background:var(--pain-t);color:var(--pain)}
-.future h2 span{background:var(--teal-t);color:var(--teal)}
-.lane{display:grid;gap:10px}
-.tier{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:stretch}
-.tier .t{font-size:12px;color:var(--muted);font-weight:600;padding-top:10px}
-.nodes{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.nd{border-radius:9px;padding:9px 12px;font-size:13px;line-height:1.35;background:var(--white);border:1px solid var(--line)}
-.nd b{display:block;font-size:14px}
-.nd small{color:var(--muted)}
-.nd.bad{border:1.5px solid var(--pain);background:var(--pain-t)}
-.nd.gone{opacity:.55;text-decoration:line-through;border-style:dashed}
-.nd.core{background:var(--blue);color:#fff;border:0}
-.nd.core small{color:rgba(255,255,255,.85)}
-.nd.dc{background:var(--violet);color:#fff;border:0}
-.nd.dc small{color:rgba(255,255,255,.85)}
-.nd.slack{background:var(--slack);color:#fff;border:0}
-.nd.slack small{color:rgba(255,255,255,.8)}
-.ar{font-size:13px;color:var(--muted)}
-.ar.bad{color:var(--pain);font-weight:600}
-.down{text-align:center;color:var(--muted);font-size:13px;margin:-2px 0}
-.issues{margin-top:14px;display:grid;gap:6px;font-size:13px;line-height:1.45}
-.issues div{padding-left:12px;border-left:3px solid var(--pain)}
-.future .issues div{border-left-color:var(--teal)}
-.retire{margin-top:22px}
-.retire .nodes{gap:10px}
-@media(max-width:960px){.states{grid-template-columns:1fr}}
-&lt;/style&gt;&lt;div class=&quot;wrap&quot;&gt;
-&lt;h1&gt;From connected workarounds to one platform&lt;/h1&gt;
-&lt;p class=&quot;lede&quot;&gt;PX’s marketplace data stays where it is, in the PX platform and ClickHouse. What changes is how that data reaches the people who sell, manage and report on accounts.&lt;/p&gt;
-&lt;div class=&quot;states&quot;&gt;
- &lt;div class=&quot;card state today&quot;&gt;&lt;h2&gt;Today &lt;span&gt;Many connections to maintain&lt;/span&gt;&lt;/h2&gt;
-  &lt;div class=&quot;lane&quot;&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;Marketplace&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;PX platform&lt;/b&gt;&lt;small&gt;Campaigns, leads, payouts&lt;/small&gt;&lt;/div&gt;&lt;span class=&quot;ar&quot;&gt;→&lt;/span&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;ClickHouse&lt;/b&gt;&lt;small&gt;Campaign data store&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-   &lt;div class=&quot;down&quot;&gt;↓ BI-built push&lt;/div&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;CRM&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd bad&quot;&gt;&lt;b&gt;HubSpot&lt;/b&gt;&lt;small&gt;Custom campaign object, companies matched by name&lt;/small&gt;&lt;/div&gt;&lt;span class=&quot;ar bad&quot;&gt;⇄&lt;/span&gt;&lt;div class=&quot;nd bad&quot;&gt;&lt;b&gt;Monday.com&lt;/b&gt;&lt;small&gt;Unreliable connector&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;Activity&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;Zoom web&lt;/b&gt;&lt;small&gt;Auto-recorded&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;nd bad&quot;&gt;&lt;b&gt;Zoom phone&lt;/b&gt;&lt;small&gt;Manual upload&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;nd bad&quot;&gt;&lt;b&gt;Outlook&lt;/b&gt;&lt;small&gt;BCC fallback&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;Insight&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;Tableau&lt;/b&gt;&lt;small&gt;Reads ClickHouse separately&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;Claude&lt;/b&gt;&lt;small&gt;Asked questions about HubSpot data&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;nd bad&quot;&gt;&lt;b&gt;Slack&lt;/b&gt;&lt;small&gt;Not connected to the CRM&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;issues&quot;&gt;&lt;div&gt;Revenue data depends on a pipeline the BI team maintains&lt;/div&gt;&lt;div&gt;Time goes to troubleshooting connectors instead of analyzing data&lt;/div&gt;&lt;div&gt;Insight only appears when someone builds a report or asks for it&lt;/div&gt;&lt;/div&gt;
- &lt;/div&gt;
- &lt;div class=&quot;card state future&quot;&gt;&lt;h2&gt;With Salesforce &lt;span&gt;One source, many surfaces&lt;/span&gt;&lt;/h2&gt;
-  &lt;div class=&quot;lane&quot;&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;Marketplace&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;PX platform&lt;/b&gt;&lt;small&gt;Unchanged&lt;/small&gt;&lt;/div&gt;&lt;span class=&quot;ar&quot;&gt;→&lt;/span&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;ClickHouse&lt;/b&gt;&lt;small&gt;Unchanged&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-   &lt;div class=&quot;down&quot;&gt;↓ API, matched on PX account ID&lt;/div&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;Unify&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd dc&quot;&gt;&lt;b&gt;Data Cloud&lt;/b&gt;&lt;small&gt;Campaign and net revenue data joined to accounts and deals&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-   &lt;div class=&quot;down&quot;&gt;↓&lt;/div&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;CRM&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd core&quot;&gt;&lt;b&gt;Sales Cloud and Service Cloud&lt;/b&gt;&lt;small&gt;Advertiser and publisher pipelines, net revenue on every account, integration cases&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;Activity&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;Email and calendar&lt;/b&gt;&lt;small&gt;Captured automatically&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;Calls&lt;/b&gt;&lt;small&gt;Recordings and transcripts attached&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-   &lt;div class=&quot;tier&quot;&gt;&lt;div class=&quot;t&quot;&gt;Where people work&lt;/div&gt;&lt;div class=&quot;nodes&quot;&gt;&lt;div class=&quot;nd slack&quot;&gt;&lt;b&gt;Slack&lt;/b&gt;&lt;small&gt;Alerts, deal updates, approvals&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;Claude&lt;/b&gt;&lt;small&gt;Claude Force skills on trusted CRM data&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;nd&quot;&gt;&lt;b&gt;Tableau&lt;/b&gt;&lt;small&gt;One dataset for deep analysis&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;issues&quot;&gt;&lt;div&gt;One governed copy of net revenue, read by every tool&lt;/div&gt;&lt;div&gt;Fewer point-to-point connections to maintain&lt;/div&gt;&lt;div&gt;Insights are pushed to people in Slack and Claude&lt;/div&gt;&lt;/div&gt;
- &lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;card retire&quot;&gt;&lt;h2&gt;What goes away&lt;/h2&gt;&lt;div class=&quot;nodes&quot;&gt;
- &lt;div class=&quot;nd gone&quot;&gt;BI-built HubSpot push&lt;/div&gt;&lt;div class=&quot;nd gone&quot;&gt;Monday.com pipeline tracking&lt;/div&gt;&lt;div class=&quot;nd gone&quot;&gt;Name-based company matching&lt;/div&gt;&lt;div class=&quot;nd gone&quot;&gt;BCC email logging&lt;/div&gt;&lt;div class=&quot;nd gone&quot;&gt;Manual call uploads&lt;/div&gt;&lt;div class=&quot;nd gone&quot;&gt;Quarterly manual projected-vs-actual review&lt;/div&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="Four pillars" srcdoc="&lt;!-- PX + Salesforce: four pillars value map --&gt;
-&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&amp;display=swap&#x27;);
-:root{
-  --ink:#14233d; --muted:#5a6778; --line:#d9e0e8; --paper:#f4f6f9; --white:#ffffff;
-  --blue:#1b6fd6; --violet:#6b3fd1; --teal:#0f8a77; --amber:#c46a12;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1180px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;line-height:1.15;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 32px;max-width:64ch}
-.cols{display:grid;grid-template-columns:1fr 1.05fr 1fr;gap:0 28px;padding:0 4px 10px;font-size:13px;font-weight:600;color:var(--muted)}
-.row{display:grid;grid-template-columns:1fr 1.05fr 1fr;gap:28px;align-items:stretch;margin-bottom:18px;position:relative}
-.need{padding:18px 4px 18px 0;border-top:1px solid var(--line)}
-.need blockquote{margin:0 0 10px;font-family:&#x27;Newsreader&#x27;,Georgia,serif;font-style:italic;font-size:21px;line-height:1.3}
-.need p{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
-.pillar{border-radius:14px;padding:20px 22px;color:var(--white);position:relative}
-.pillar h2{font-size:19px;font-weight:600;margin:0 0 8px;line-height:1.25}
-.pillar p{margin:0;font-size:14px;line-height:1.5;opacity:.94}
-.pillar .tag{display:inline-block;font-size:12px;font-weight:600;background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;margin-bottom:10px}
-.pillar:before,.pillar:after{content:&quot;&quot;;position:absolute;top:50%;width:28px;height:2px;background:currentColor;opacity:.0}
-.arrow{position:absolute;top:50%;width:28px;height:2px;background:var(--line)}
-.arrow.l{left:-28px}.arrow.r{right:-28px}
-.arrow.r:after{content:&quot;&quot;;position:absolute;right:-1px;top:-4px;border-left:7px solid var(--line);border-top:5px solid transparent;border-bottom:5px solid transparent}
-.value{background:var(--white);border-radius:14px;padding:18px 20px;border-left:5px solid}
-.value h3{font-size:16px;font-weight:600;margin:0 0 8px}
-.value ul{margin:0;padding-left:18px;font-size:14px;line-height:1.5;color:var(--ink)}
-.value li{margin-bottom:3px}
-.p1{background:var(--blue)} .v1{border-color:var(--blue)}
-.p2{background:var(--violet)} .v2{border-color:var(--violet)}
-.p3{background:var(--teal)} .v3{border-color:var(--teal)}
-.p4{background:var(--amber)} .v4{border-color:var(--amber)}
-.p2{box-shadow:0 0 0 4px rgba(107,63,209,.18)}
-.base{margin-top:26px;border-radius:14px;background:var(--ink);color:var(--white);padding:18px 22px;display:flex;gap:14px 26px;flex-wrap:wrap;align-items:center}
-.base strong{font-size:15px}
-.base span{font-size:14px;opacity:.85}
-.base span + span:before{content:&quot;&quot;;display:inline-block;width:5px;height:5px;border-radius:50%;background:#7fa7e6;margin:0 14px 2px 0;vertical-align:middle}
-@media (max-width:860px){
-  .cols{display:none}
-  .row{grid-template-columns:1fr;gap:10px;margin-bottom:28px}
-  .arrow{display:none}
-}
-&lt;/style&gt;
-&lt;div class=&quot;wrap&quot;&gt;
-  &lt;h1&gt;What PX needs, and what Salesforce delivers&lt;/h1&gt;
-  &lt;p class=&quot;lede&quot;&gt;Four pillars drawn from our conversations with the PX team. Each one starts with what we heard, then shows the Salesforce capability and the outcome for the business.&lt;/p&gt;
-
-  &lt;div class=&quot;cols&quot;&gt;&lt;div&gt;What we heard&lt;/div&gt;&lt;div&gt;Salesforce pillar&lt;/div&gt;&lt;div&gt;Value to PX&lt;/div&gt;&lt;/div&gt;
-
-  &lt;div class=&quot;row&quot;&gt;
-    &lt;div class=&quot;need&quot;&gt;
-      &lt;blockquote&gt;“We don’t have a rolling net revenue insight per client.”&lt;/blockquote&gt;
-      &lt;p&gt;Campaign data moves from ClickHouse into a HubSpot custom object through a pipeline the BI team maintains. Projected cohort values are checked against actuals by hand every quarter.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;pillar p1&quot;&gt;&lt;span class=&quot;arrow l&quot;&gt;&lt;/span&gt;&lt;span class=&quot;arrow r&quot;&gt;&lt;/span&gt;
-      &lt;h2&gt;One version of net revenue&lt;/h2&gt;
-      &lt;p&gt;Data Cloud brings ClickHouse campaign data in through an API and unifies it with accounts and deals. Sales Cloud, Slack and Tableau all read from that single source.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;value v1&quot;&gt;
-      &lt;h3&gt;Know what every deal is really worth&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li&gt;Live projected vs. actual net revenue by cohort, vertical and rep&lt;/li&gt;
-        &lt;li&gt;Attribution from first touch to margin earned&lt;/li&gt;
-        &lt;li&gt;Less pipeline upkeep for the BI team&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class=&quot;row&quot;&gt;
-    &lt;div class=&quot;need&quot;&gt;
-      &lt;blockquote&gt;“I’m looking for something more output driven.”&lt;/blockquote&gt;
-      &lt;p&gt;Building reports takes too long, the team still has to know what to ask Claude, and RevOps ends up chasing reps about stalled deals by hand.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;pillar p2&quot;&gt;&lt;span class=&quot;arrow l&quot;&gt;&lt;/span&gt;&lt;span class=&quot;arrow r&quot;&gt;&lt;/span&gt;
-      &lt;span class=&quot;tag&quot;&gt;The wow moment&lt;/span&gt;
-      &lt;h2&gt;Insights that find you&lt;/h2&gt;
-      &lt;p&gt;Claude Force skills and proactive signals arrive in Slack, Salesforce or Claude, grounded in trusted CRM data.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;value v2&quot;&gt;
-      &lt;h3&gt;The system flags it, so people don’t have to&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li&gt;Alerts on stalled deals, sentiment drops and cohort shortfalls&lt;/li&gt;
-        &lt;li&gt;Account briefs for GMs on demand&lt;/li&gt;
-        &lt;li&gt;Time spent acting on insight instead of building reports&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class=&quot;row&quot;&gt;
-    &lt;div class=&quot;need&quot;&gt;
-      &lt;blockquote&gt;“The more we have sales people do admin, the less they’ll do sales.”&lt;/blockquote&gt;
-      &lt;p&gt;Inbound Zoom calls need a manual upload, email logging depends on BCC, and stage updates get skipped.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;pillar p3&quot;&gt;&lt;span class=&quot;arrow l&quot;&gt;&lt;/span&gt;&lt;span class=&quot;arrow r&quot;&gt;&lt;/span&gt;
-      &lt;h2&gt;Sellers sell, the system does the admin&lt;/h2&gt;
-      &lt;p&gt;Activity is captured automatically, and reps update deals from inside Slack, where they already work.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;value v3&quot;&gt;
-      &lt;h3&gt;Better data with less effort&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li&gt;Adoption without constant enforcement&lt;/li&gt;
-        &lt;li&gt;Cleaner pipeline and forecast&lt;/li&gt;
-        &lt;li&gt;More selling time for a 25–30 person commercial team&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class=&quot;row&quot;&gt;
-    &lt;div class=&quot;need&quot;&gt;
-      &lt;blockquote&gt;“Our business is very unique… two businesses in one.”&lt;/blockquote&gt;
-      &lt;p&gt;A two-sided marketplace in a one-sided CRM. Three pricing models with no playbook, and publisher deals that sign but never go live.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;pillar p4&quot;&gt;&lt;span class=&quot;arrow l&quot;&gt;&lt;/span&gt;&lt;span class=&quot;arrow r&quot;&gt;&lt;/span&gt;
-      &lt;h2&gt;Built for a marketplace&lt;/h2&gt;
-      &lt;p&gt;Advertiser and publisher motions on one platform, guided deal structuring across margin, platform-fee and CPA models, and publisher onboarding tracked to first revenue.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;value v4&quot;&gt;
-      &lt;h3&gt;Grow both sides of the market&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li&gt;Margin protected on every deal&lt;/li&gt;
-        &lt;li&gt;Faster time to first revenue for publishers&lt;/li&gt;
-        &lt;li&gt;Fewer signed deals that never earn&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class=&quot;base&quot;&gt;
-    &lt;strong&gt;The foundation&lt;/strong&gt;
-    &lt;span&gt;Already on Slack and Tableau with Salesforce&lt;/span&gt;
-    &lt;span&gt;One relationship, one contract&lt;/span&gt;
-    &lt;span&gt;Room to scale past HubSpot’s limits&lt;/span&gt;
-    &lt;span&gt;Phased rollout sized for a lean team&lt;/span&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="Monday morning" srcdoc="&lt;!-- Monday morning before/after --&gt;&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;--blue:#1b6fd6;--blue-t:#e4eefb;--violet:#6b3fd1;--violet-t:#efe9fb;--teal:#0f8a77;--teal-t:#e3f3ef;--amber:#c46a12;--amber-t:#fbeedf;--pain:#c2334d;--pain-t:#fbe9ec;--slack:#4a154b}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 26px;max-width:72ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 12px}
-.illus{display:inline-block;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:3px 10px;margin-bottom:14px}
-.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
-&lt;/style&gt;&lt;style&gt;
-.ba{display:grid;grid-template-columns:1fr 1.15fr;gap:20px}
-.col h2{display:flex;justify-content:space-between;align-items:baseline}
-.col h2 em{font-style:normal;font-size:14px;font-weight:600}
-.before h2 em{color:var(--pain)} .after h2 em{color:var(--teal)}
-.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.steps li{display:grid;grid-template-columns:64px 1fr;gap:12px;font-size:14px;line-height:1.45}
-.steps .tm{font-weight:600;color:var(--muted);font-size:13px;padding-top:2px}
-.steps .tx{background:var(--paper);border-radius:9px;padding:9px 12px}
-.steps .tx small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
-.slackmsg{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:14px}
-.sh{background:var(--slack);color:#fff;padding:9px 14px;font-size:13px;font-weight:600}
-.sb{padding:14px;font-size:14px;line-height:1.45}
-.sb .from{font-weight:700}.sb .from small{font-weight:400;color:var(--muted);margin-left:6px}
-.flag{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
-.flag:first-of-type{border-top:0}
-.dot{width:10px;height:10px;border-radius:50%;margin-top:5px}
-.btn{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:3px 9px;white-space:nowrap;color:var(--ink);background:var(--white)}
-.claude{border:1px solid var(--line);border-radius:12px;padding:14px;font-size:14px;line-height:1.5;background:var(--white)}
-.claude .q{background:var(--paper);border-radius:9px;padding:8px 12px;margin-bottom:10px}
-.claude ul{margin:6px 0 0;padding-left:18px}
-.foot{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.foot .card b{display:block;font-size:22px}
-.foot .card span{font-size:13px;color:var(--muted)}
-@media(max-width:960px){.ba,.foot{grid-template-columns:1fr}}
-&lt;/style&gt;&lt;div class=&quot;wrap&quot;&gt;
-&lt;h1&gt;Monday morning for a PX general manager&lt;/h1&gt;
-&lt;p class=&quot;lede&quot;&gt;The same questions, answered two ways. Today the GM goes looking for problems. With Salesforce the problems come to them.&lt;/p&gt;
-&lt;span class=&quot;illus&quot;&gt;Illustrative example with sample accounts and times&lt;/span&gt;
-&lt;div class=&quot;ba&quot;&gt;
- &lt;div class=&quot;card col before&quot;&gt;&lt;h2&gt;Today &lt;em&gt;About 2 hours&lt;/em&gt;&lt;/h2&gt;
-  &lt;ul class=&quot;steps&quot;&gt;
-   &lt;li&gt;&lt;span class=&quot;tm&quot;&gt;8:00&lt;/span&gt;&lt;span class=&quot;tx&quot;&gt;Open HubSpot and build a pipeline report for the vertical&lt;small&gt;Filters rebuilt by hand each week&lt;/small&gt;&lt;/span&gt;&lt;/li&gt;
-   &lt;li&gt;&lt;span class=&quot;tm&quot;&gt;8:30&lt;/span&gt;&lt;span class=&quot;tx&quot;&gt;Ask Claude which deals look stalled and what sentiment looks like&lt;small&gt;Needs the right questions, one at a time&lt;/small&gt;&lt;/span&gt;&lt;/li&gt;
-   &lt;li&gt;&lt;span class=&quot;tm&quot;&gt;9:00&lt;/span&gt;&lt;span class=&quot;tx&quot;&gt;Check Tableau for net revenue by client&lt;small&gt;A separate tool, a separate dataset&lt;/small&gt;&lt;/span&gt;&lt;/li&gt;
-   &lt;li&gt;&lt;span class=&quot;tm&quot;&gt;9:30&lt;/span&gt;&lt;span class=&quot;tx&quot;&gt;Cross-check publisher go-live status&lt;small&gt;Scattered across tickets and notes&lt;/small&gt;&lt;/span&gt;&lt;/li&gt;
-   &lt;li&gt;&lt;span class=&quot;tm&quot;&gt;9:45&lt;/span&gt;&lt;span class=&quot;tx&quot;&gt;Message reps one by one about stalled deals&lt;small&gt;The GM or RevOps becomes the enforcer&lt;/small&gt;&lt;/span&gt;&lt;/li&gt;
-  &lt;/ul&gt;
- &lt;/div&gt;
- &lt;div class=&quot;card col after&quot;&gt;&lt;h2&gt;With Salesforce &lt;em&gt;About 15 minutes&lt;/em&gt;&lt;/h2&gt;
-  &lt;div class=&quot;slackmsg&quot;&gt;&lt;div class=&quot;sh&quot;&gt;# home-services-pipeline&lt;/div&gt;&lt;div class=&quot;sb&quot;&gt;
-   &lt;div class=&quot;from&quot;&gt;Weekly pipeline brief &lt;small&gt;8:00 AM · from Salesforce&lt;/small&gt;&lt;/div&gt;
-   &lt;div class=&quot;flag&quot;&gt;&lt;span class=&quot;dot&quot; style=&quot;background:var(--pain)&quot;&gt;&lt;/span&gt;&lt;span&gt;&lt;b&gt;3 deals stalled&lt;/b&gt; for more than 21 days in negotiation, worth $84K in projected net revenue&lt;/span&gt;&lt;span class=&quot;btn&quot;&gt;Review&lt;/span&gt;&lt;/div&gt;
-   &lt;div class=&quot;flag&quot;&gt;&lt;span class=&quot;dot&quot; style=&quot;background:var(--amber)&quot;&gt;&lt;/span&gt;&lt;span&gt;&lt;b&gt;Publisher B&lt;/b&gt; signed 38 days ago and hasn’t sent test leads&lt;/span&gt;&lt;span class=&quot;btn&quot;&gt;Nudge AM&lt;/span&gt;&lt;/div&gt;
-   &lt;div class=&quot;flag&quot;&gt;&lt;span class=&quot;dot&quot; style=&quot;background:var(--amber)&quot;&gt;&lt;/span&gt;&lt;span&gt;&lt;b&gt;Q3 cohort&lt;/b&gt; is tracking 22% below its projected net revenue&lt;/span&gt;&lt;span class=&quot;btn&quot;&gt;Open view&lt;/span&gt;&lt;/div&gt;
-   &lt;div class=&quot;flag&quot;&gt;&lt;span class=&quot;dot&quot; style=&quot;background:var(--violet)&quot;&gt;&lt;/span&gt;&lt;span&gt;&lt;b&gt;Advertiser A&lt;/b&gt; sentiment dropped after the last two calls&lt;/span&gt;&lt;span class=&quot;btn&quot;&gt;Brief me&lt;/span&gt;&lt;/div&gt;
-   &lt;div class=&quot;flag&quot;&gt;&lt;span class=&quot;dot&quot; style=&quot;background:var(--teal)&quot;&gt;&lt;/span&gt;&lt;span&gt;&lt;b&gt;Advertiser C&lt;/b&gt; is buying above plan, which makes it a candidate for a calls expansion&lt;/span&gt;&lt;span class=&quot;btn&quot;&gt;Create deal&lt;/span&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/div&gt;
-  &lt;div class=&quot;claude&quot;&gt;&lt;div class=&quot;q&quot;&gt;Brief me on Advertiser A before Thursday’s call&lt;/div&gt;
-   &lt;b&gt;Advertiser A: renewal risk is moderate&lt;/b&gt;
-   &lt;ul&gt;&lt;li&gt;Net revenue is down 15% over 60 days, as lead volume shifted to a competitor&lt;/li&gt;&lt;li&gt;The last two calls raised concerns about lead quality in two states&lt;/li&gt;&lt;li&gt;Suggested next step: review state filters and offer a CPA pilot&lt;/li&gt;&lt;/ul&gt;
-  &lt;/div&gt;
- &lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;foot&quot;&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;Pushed, not pulled&lt;/b&gt;&lt;span&gt;Signals arrive where the team already works&lt;/span&gt;&lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;One source&lt;/b&gt;&lt;span&gt;CRM activity and PX net revenue in the same view&lt;/span&gt;&lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;The system nudges reps&lt;/b&gt;&lt;span&gt;Leadership stops chasing people for updates&lt;/span&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="Data model" srcdoc="&lt;!-- Marketplace data model --&gt;&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;--blue:#1b6fd6;--blue-t:#e4eefb;--violet:#6b3fd1;--violet-t:#efe9fb;--teal:#0f8a77;--teal-t:#e3f3ef;--amber:#c46a12;--amber-t:#fbeedf;--pain:#c2334d;--pain-t:#fbe9ec;--slack:#4a154b}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 26px;max-width:72ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 12px}
-.illus{display:inline-block;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:3px 10px;margin-bottom:14px}
-.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
-&lt;/style&gt;&lt;style&gt;
-.dm{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 26px;position:relative}
-.ob{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.ob .h{padding:10px 14px;color:#fff;font-weight:600;font-size:15px}
-.ob .h small{display:block;font-weight:400;font-size:12px;opacity:.85}
-.ob ul{list-style:none;margin:0;padding:10px 14px;font-size:13px;line-height:1.7}
-.ob li b{font-weight:600}
-.std .h{background:var(--blue)}.cus .h{background:var(--violet)}.svc .h{background:var(--teal)}
-.rel{font-size:12px;color:var(--muted);text-align:center;align-self:center}
-.span2{grid-column:span 2}
-.legend{display:flex;gap:18px;font-size:13px;color:var(--muted);margin:0 0 16px;flex-wrap:wrap}
-.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-.why{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.why .card{font-size:14px;line-height:1.5}.why b{display:block;margin-bottom:4px}
-.conn{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:4px 0 0}
-@media(max-width:960px){.dm,.why{grid-template-columns:1fr}.span2{grid-column:auto}}
-&lt;/style&gt;&lt;div class=&quot;wrap&quot;&gt;
-&lt;h1&gt;A data model built for two businesses in one&lt;/h1&gt;
-&lt;p class=&quot;lede&quot;&gt;A starting point to validate together, not a finished design. It shows how advertisers, publishers, campaigns and net revenue can live in one connected model, so nothing is matched by company name.&lt;/p&gt;
-&lt;div class=&quot;legend&quot;&gt;&lt;span&gt;&lt;i style=&quot;background:var(--blue)&quot;&gt;&lt;/i&gt;Standard Salesforce object&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;background:var(--violet)&quot;&gt;&lt;/i&gt;Custom object for PX&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;background:var(--teal)&quot;&gt;&lt;/i&gt;Service&lt;/span&gt;&lt;/div&gt;
-&lt;div class=&quot;dm&quot;&gt;
- &lt;div class=&quot;ob std&quot;&gt;&lt;div class=&quot;h&quot;&gt;Account&lt;small&gt;One record per company&lt;/small&gt;&lt;/div&gt;&lt;ul&gt;
-  &lt;li&gt;&lt;b&gt;Record type:&lt;/b&gt; Advertiser or Publisher&lt;/li&gt;&lt;li&gt;&lt;b&gt;PX account ID:&lt;/b&gt; the key to PX data&lt;/li&gt;&lt;li&gt;Vertical, segment and owner&lt;/li&gt;&lt;li&gt;Rolling net revenue, 30/90/365 days&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
- &lt;div class=&quot;ob std&quot;&gt;&lt;div class=&quot;h&quot;&gt;Opportunity&lt;small&gt;New business and expansion&lt;/small&gt;&lt;/div&gt;&lt;ul&gt;
-  &lt;li&gt;&lt;b&gt;Pipelines:&lt;/b&gt; advertiser, publisher, expansion&lt;/li&gt;&lt;li&gt;&lt;b&gt;Pricing model:&lt;/b&gt; margin, platform fee or CPA&lt;/li&gt;&lt;li&gt;Projected 12-month net revenue from the cohort default&lt;/li&gt;&lt;li&gt;Actual net revenue to date, and the variance&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
- &lt;div class=&quot;ob cus&quot;&gt;&lt;div class=&quot;h&quot;&gt;PX Campaign&lt;small&gt;Mirrors each campaign in the PX platform&lt;/small&gt;&lt;/div&gt;&lt;ul&gt;
-  &lt;li&gt;Linked to its account and deal&lt;/li&gt;&lt;li&gt;Vertical, states, hours and filters&lt;/li&gt;&lt;li&gt;Status: testing, live, paused&lt;/li&gt;&lt;li&gt;PX campaign ID&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
- &lt;div class=&quot;ob std&quot;&gt;&lt;div class=&quot;h&quot;&gt;Contact&lt;small&gt;People at each account&lt;/small&gt;&lt;/div&gt;&lt;ul&gt;
-  &lt;li&gt;Marketing touch history&lt;/li&gt;&lt;li&gt;Original lead source for attribution&lt;/li&gt;&lt;li&gt;Email and calls captured automatically&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
- &lt;div class=&quot;ob cus&quot;&gt;&lt;div class=&quot;h&quot;&gt;Onboarding milestones&lt;small&gt;Mainly for publishers&lt;/small&gt;&lt;/div&gt;&lt;ul&gt;
-  &lt;li&gt;Signed, docs sent, integrating, test leads, live, first revenue&lt;/li&gt;&lt;li&gt;Date each milestone is reached, and time spent in each step&lt;/li&gt;&lt;li&gt;Alerts when a step stalls&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
- &lt;div class=&quot;ob cus&quot;&gt;&lt;div class=&quot;h&quot;&gt;Campaign performance&lt;small&gt;A monthly roll-up from ClickHouse&lt;/small&gt;&lt;/div&gt;&lt;ul&gt;
-  &lt;li&gt;Period and lead volume&lt;/li&gt;&lt;li&gt;Gross spend and publisher payout&lt;/li&gt;&lt;li&gt;&lt;b&gt;PX net revenue&lt;/b&gt;&lt;/li&gt;&lt;li&gt;Aggregated, never lead-level&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
- &lt;div class=&quot;ob svc span2&quot;&gt;&lt;div class=&quot;h&quot;&gt;Case&lt;small&gt;Client integration conversations, replacing Jira and HubSpot tickets&lt;/small&gt;&lt;/div&gt;&lt;ul&gt;
-  &lt;li&gt;Linked to the account, and to an onboarding milestone when relevant&lt;/li&gt;&lt;li&gt;Sentiment and time-to-resolution feed account health&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
- &lt;div class=&quot;rel&quot;&gt;Account → Opportunity → PX Campaign → Campaign performance&lt;br&gt;Account → Contact, Case, Onboarding&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;why&quot;&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;Matched on ID, not name&lt;/b&gt;The PX account ID ends the disconnect between CRM companies and PX accounts.&lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;Aggregates in the CRM, detail in ClickHouse&lt;/b&gt;The CRM holds what sellers need, while raw marketplace data stays in ClickHouse.&lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;Both sides, one model&lt;/b&gt;Advertiser and publisher motions share one structure, so leadership sees the whole market.&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="Net revenue view" srcdoc="&lt;!-- Net revenue dashboard mock --&gt;&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;--blue:#1b6fd6;--blue-t:#e4eefb;--violet:#6b3fd1;--violet-t:#efe9fb;--teal:#0f8a77;--teal-t:#e3f3ef;--amber:#c46a12;--amber-t:#fbeedf;--pain:#c2334d;--pain-t:#fbe9ec;--slack:#4a154b}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 26px;max-width:72ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 12px}
-.illus{display:inline-block;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:3px 10px;margin-bottom:14px}
-.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
-&lt;/style&gt;&lt;style&gt;
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
-.kpi .v{font-size:26px;font-weight:700}.kpi .l{font-size:13px;color:var(--muted);margin-top:4px}
-.kpi .v.neg{color:var(--pain)}
-.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:18px}
-.leg{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:12px}
-.leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-.br{display:grid;grid-template-columns:170px 1fr 120px;gap:10px;align-items:center;margin-bottom:12px;font-size:13px}
-.bt{display:grid;gap:3px}
-.bt div{height:11px;border-radius:3px}
-.p{background:#b8c7dc}.a{background:var(--blue)}.a.lo{background:var(--pain)}
-.bv{color:var(--muted);text-align:right}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;color:var(--muted);font-weight:600;padding:6px 6px;border-bottom:1px solid var(--line)}
-td{padding:8px 6px;border-bottom:1px solid var(--line)}
-.neg{color:var(--pain);font-weight:600}.pos{color:var(--teal);font-weight:600}
-.fl{font-size:12px;background:var(--pain-t);color:var(--pain);border-radius:999px;padding:2px 8px;white-space:nowrap}
-.ok{font-size:12px;background:var(--teal-t);color:var(--teal);border-radius:999px;padding:2px 8px;white-space:nowrap}
-.note{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.5}
-@media(max-width:960px){.kpis{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.br{grid-template-columns:1fr}.bv{text-align:left}}
-&lt;/style&gt;&lt;div class=&quot;wrap&quot;&gt;
-&lt;h1&gt;Projected vs. actual net revenue, live&lt;/h1&gt;
-&lt;p class=&quot;lede&quot;&gt;Every deal already carries a projected 12-month net revenue from its cohort default. With PX campaign data joined to accounts and deals, the comparison to actuals updates daily instead of once a quarter, by vertical, cohort or rep.&lt;/p&gt;
-&lt;span class=&quot;illus&quot;&gt;Illustrative data, not PX figures&lt;/span&gt;
-&lt;div class=&quot;kpis&quot;&gt;
- &lt;div class=&quot;card kpi&quot;&gt;&lt;div class=&quot;v&quot;&gt;$4.34M&lt;/div&gt;&lt;div class=&quot;l&quot;&gt;Projected 12-month net revenue, 2026 deals&lt;/div&gt;&lt;/div&gt;
- &lt;div class=&quot;card kpi&quot;&gt;&lt;div class=&quot;v&quot;&gt;$3.99M&lt;/div&gt;&lt;div class=&quot;l&quot;&gt;Actual net revenue, annualized to date&lt;/div&gt;&lt;/div&gt;
- &lt;div class=&quot;card kpi&quot;&gt;&lt;div class=&quot;v neg&quot;&gt;-8%&lt;/div&gt;&lt;div class=&quot;l&quot;&gt;Variance to projection&lt;/div&gt;&lt;/div&gt;
- &lt;div class=&quot;card kpi&quot;&gt;&lt;div class=&quot;v&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;l&quot;&gt;Cohorts flagged for a default review&lt;/div&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;grid&quot;&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;h2&gt;By vertical&lt;/h2&gt;&lt;div class=&quot;leg&quot;&gt;&lt;span&gt;&lt;i style=&quot;background:#b8c7dc&quot;&gt;&lt;/i&gt;Projected&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;background:var(--blue)&quot;&gt;&lt;/i&gt;Actual&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;background:var(--pain)&quot;&gt;&lt;/i&gt;More than 10% below&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;br&quot;&gt;&lt;div class=&quot;bl&quot;&gt;Home services&lt;/div&gt;&lt;div class=&quot;bt&quot;&gt;&lt;div class=&quot;p&quot; style=&quot;width:100.0%&quot;&gt;&lt;/div&gt;&lt;div class=&quot;a lo&quot; style=&quot;width:86.7%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;bv&quot;&gt;$1260K / $1092K&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;br&quot;&gt;&lt;div class=&quot;bl&quot;&gt;Education&lt;/div&gt;&lt;div class=&quot;bt&quot;&gt;&lt;div class=&quot;p&quot; style=&quot;width:77.8%&quot;&gt;&lt;/div&gt;&lt;div class=&quot;a &quot; style=&quot;width:82.1%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;bv&quot;&gt;$980K / $1034K&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;br&quot;&gt;&lt;div class=&quot;bl&quot;&gt;Financial services&lt;/div&gt;&lt;div class=&quot;bt&quot;&gt;&lt;div class=&quot;p&quot; style=&quot;width:50.8%&quot;&gt;&lt;/div&gt;&lt;div class=&quot;a lo&quot; style=&quot;width:40.6%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;bv&quot;&gt;$640K / $512K&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;br&quot;&gt;&lt;div class=&quot;bl&quot;&gt;Health insurance and Medicare&lt;/div&gt;&lt;div class=&quot;bt&quot;&gt;&lt;div class=&quot;p&quot; style=&quot;width:69.0%&quot;&gt;&lt;/div&gt;&lt;div class=&quot;a &quot; style=&quot;width:63.6%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;bv&quot;&gt;$870K / $801K&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;br&quot;&gt;&lt;div class=&quot;bl&quot;&gt;Aged data&lt;/div&gt;&lt;div class=&quot;bt&quot;&gt;&lt;div class=&quot;p&quot; style=&quot;width:32.5%&quot;&gt;&lt;/div&gt;&lt;div class=&quot;a &quot; style=&quot;width:36.1%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;bv&quot;&gt;$410K / $455K&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;br&quot;&gt;&lt;div class=&quot;bl&quot;&gt;Mortgage&lt;/div&gt;&lt;div class=&quot;bt&quot;&gt;&lt;div class=&quot;p&quot; style=&quot;width:14.3%&quot;&gt;&lt;/div&gt;&lt;div class=&quot;a lo&quot; style=&quot;width:7.7%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;bv&quot;&gt;$180K / $97K&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;h2&gt;Cohort detail&lt;/h2&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Vertical&lt;/th&gt;&lt;th&gt;Deals&lt;/th&gt;&lt;th&gt;Projected&lt;/th&gt;&lt;th&gt;Actual&lt;/th&gt;&lt;th&gt;Var.&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Home services&lt;/td&gt;&lt;td&gt;42&lt;/td&gt;&lt;td&gt;$1260K&lt;/td&gt;&lt;td&gt;$1092K&lt;/td&gt;&lt;td class=&quot;neg&quot;&gt;-13%&lt;/td&gt;&lt;td&gt;&lt;span class=fl&gt;Review cohort default&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Education&lt;/td&gt;&lt;td&gt;28&lt;/td&gt;&lt;td&gt;$980K&lt;/td&gt;&lt;td&gt;$1034K&lt;/td&gt;&lt;td class=&quot;pos&quot;&gt;+6%&lt;/td&gt;&lt;td&gt;&lt;span class=ok&gt;Above plan&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Financial services&lt;/td&gt;&lt;td&gt;19&lt;/td&gt;&lt;td&gt;$640K&lt;/td&gt;&lt;td&gt;$512K&lt;/td&gt;&lt;td class=&quot;neg&quot;&gt;-20%&lt;/td&gt;&lt;td&gt;&lt;span class=fl&gt;Review cohort default&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Health insurance and Medicare&lt;/td&gt;&lt;td&gt;23&lt;/td&gt;&lt;td&gt;$870K&lt;/td&gt;&lt;td&gt;$801K&lt;/td&gt;&lt;td class=&quot;neg&quot;&gt;-8%&lt;/td&gt;&lt;td&gt;&lt;span class=ok&gt;On track&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aged data&lt;/td&gt;&lt;td&gt;31&lt;/td&gt;&lt;td&gt;$410K&lt;/td&gt;&lt;td&gt;$455K&lt;/td&gt;&lt;td class=&quot;pos&quot;&gt;+11%&lt;/td&gt;&lt;td&gt;&lt;span class=ok&gt;Above plan&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Mortgage&lt;/td&gt;&lt;td&gt;8&lt;/td&gt;&lt;td&gt;$180K&lt;/td&gt;&lt;td&gt;$97K&lt;/td&gt;&lt;td class=&quot;neg&quot;&gt;-46%&lt;/td&gt;&lt;td&gt;&lt;span class=fl&gt;Review cohort default&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
- &lt;p class=&quot;note&quot;&gt;The same view filters by rep, pricing model (margin, platform fee, CPA) and original lead source, so marketing attribution runs from first touch to net revenue earned.&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="Publisher funnel" srcdoc="&lt;!-- Publisher funnel --&gt;&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;--blue:#1b6fd6;--blue-t:#e4eefb;--violet:#6b3fd1;--violet-t:#efe9fb;--teal:#0f8a77;--teal-t:#e3f3ef;--amber:#c46a12;--amber-t:#fbeedf;--pain:#c2334d;--pain-t:#fbe9ec;--slack:#4a154b}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 26px;max-width:72ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 12px}
-.illus{display:inline-block;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:3px 10px;margin-bottom:14px}
-.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
-&lt;/style&gt;&lt;style&gt;
-.g{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
-.fh{display:grid;grid-template-columns:190px 1fr 110px;gap:12px;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:8px}
-.fr{display:grid;grid-template-columns:190px 1fr 110px;gap:12px;align-items:center;margin-bottom:10px;font-size:14px}
-.fb{background:var(--paper);border-radius:8px}
-.f{background:var(--teal);color:#fff;font-weight:600;font-size:13px;border-radius:8px;padding:8px 10px;min-width:44px}
-.f.warn{background:var(--amber)}.f.bad{background:var(--pain)}
-.fd{font-size:13px;color:var(--muted)}
-.leak{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--pain-t);font-size:14px;line-height:1.5}
-.leak b{color:var(--pain)}
-.tr{display:grid;gap:10px}
-.tr .it{border-left:4px solid var(--teal);background:var(--paper);border-radius:0 9px 9px 0;padding:10px 12px;font-size:14px;line-height:1.45}
-.tr .it b{display:block}
-@media(max-width:960px){.g{grid-template-columns:1fr}.fr,.fh{grid-template-columns:1fr 2fr}.fd{display:none}.fh div:last-child{display:none}}
-&lt;/style&gt;&lt;div class=&quot;wrap&quot;&gt;
-&lt;h1&gt;Publisher onboarding, tracked to first revenue&lt;/h1&gt;
-&lt;p class=&quot;lede&quot;&gt;On the supply side, a signed agreement isn’t the finish line. Publishers do their own integration, and many signed deals never produce net revenue. Tracking each milestone shows where they stall and prompts the right person to act.&lt;/p&gt;
-&lt;span class=&quot;illus&quot;&gt;Illustrative numbers for a year of signed publisher deals&lt;/span&gt;
-&lt;div class=&quot;g&quot;&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;h2&gt;Where signed publishers drop off&lt;/h2&gt;
-  &lt;div class=&quot;fh&quot;&gt;&lt;div&gt;Milestone&lt;/div&gt;&lt;div&gt;Publishers&lt;/div&gt;&lt;div&gt;Avg. time in step&lt;/div&gt;&lt;/div&gt;
-  &lt;div class=&quot;fr&quot;&gt;&lt;div class=&quot;fn&quot;&gt;Agreement signed&lt;/div&gt;&lt;div class=&quot;fb&quot;&gt;&lt;div class=&quot;f &quot; style=&quot;width:100%&quot;&gt;40&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fd&quot;&gt;—&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fr&quot;&gt;&lt;div class=&quot;fn&quot;&gt;API docs sent&lt;/div&gt;&lt;div class=&quot;fb&quot;&gt;&lt;div class=&quot;f &quot; style=&quot;width:92%&quot;&gt;37&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fd&quot;&gt;3 days&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fr&quot;&gt;&lt;div class=&quot;fn&quot;&gt;Integration in progress&lt;/div&gt;&lt;div class=&quot;fb&quot;&gt;&lt;div class=&quot;f warn&quot; style=&quot;width:75%&quot;&gt;30&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fd&quot;&gt;19 days&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fr&quot;&gt;&lt;div class=&quot;fn&quot;&gt;Test leads received&lt;/div&gt;&lt;div class=&quot;fb&quot;&gt;&lt;div class=&quot;f bad&quot; style=&quot;width:48%&quot;&gt;19&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fd&quot;&gt;24 days&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fr&quot;&gt;&lt;div class=&quot;fn&quot;&gt;Live in marketplace&lt;/div&gt;&lt;div class=&quot;fb&quot;&gt;&lt;div class=&quot;f &quot; style=&quot;width:40%&quot;&gt;16&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fd&quot;&gt;6 days&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fr&quot;&gt;&lt;div class=&quot;fn&quot;&gt;First net revenue&lt;/div&gt;&lt;div class=&quot;fb&quot;&gt;&lt;div class=&quot;f &quot; style=&quot;width:32%&quot;&gt;13&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fd&quot;&gt;11 days&lt;/div&gt;&lt;/div&gt;
-  &lt;div class=&quot;leak&quot;&gt;&lt;b&gt;27 of 40 signed publishers&lt;/b&gt; never reach first net revenue. Most of that drop happens during integration, before any test leads arrive.&lt;/div&gt;
- &lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;h2&gt;How Salesforce closes the gap&lt;/h2&gt;&lt;div class=&quot;tr&quot;&gt;
-  &lt;div class=&quot;it&quot;&gt;&lt;b&gt;A milestone on every publisher deal&lt;/b&gt;From signature through test leads and go-live to first net revenue, all visible in one view&lt;/div&gt;
-  &lt;div class=&quot;it&quot;&gt;&lt;b&gt;Alerts when a step stalls&lt;/b&gt;For example, no test leads 21 days after the docs were sent, posted to the publisher account manager in Slack&lt;/div&gt;
-  &lt;div class=&quot;it&quot;&gt;&lt;b&gt;First revenue confirmed from PX data&lt;/b&gt;Net revenue from ClickHouse marks the deal as earning, with no manual update&lt;/div&gt;
-  &lt;div class=&quot;it&quot;&gt;&lt;b&gt;Focus on the right publishers&lt;/b&gt;Supply-side leaders see which signed publishers are worth the push, based on the demand advertisers need&lt;/div&gt;
- &lt;/div&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="Value calculator" srcdoc="&lt;!-- Value calculator --&gt;&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;--blue:#1b6fd6;--blue-t:#e4eefb;--violet:#6b3fd1;--violet-t:#efe9fb;--teal:#0f8a77;--teal-t:#e3f3ef;--amber:#c46a12;--amber-t:#fbeedf;--pain:#c2334d;--pain-t:#fbe9ec;--slack:#4a154b}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 26px;max-width:72ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 12px}
-.illus{display:inline-block;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:3px 10px;margin-bottom:14px}
-.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
-&lt;/style&gt;&lt;style&gt;
-.cg{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:start}
-.grp{margin-bottom:16px}
-.grp h2{font-size:16px;margin:0 0 10px}
-.in{display:grid;grid-template-columns:1fr 120px;gap:10px;align-items:center;margin-bottom:9px;font-size:14px}
-.in label small{display:block;color:var(--muted);font-size:12px}
-.in input{font:inherit;font-size:15px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;width:100%;text-align:right;color:var(--ink);background:var(--white)}
-.in input:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
-.out{position:sticky;top:16px}
-.tot{background:var(--ink);color:#fff;border-radius:14px;padding:20px 22px;margin-bottom:12px}
-.tot .v{font-size:38px;font-weight:700;line-height:1.1}
-.tot .l{font-size:14px;opacity:.8}
-.ln{display:flex;justify-content:space-between;font-size:14px;padding:9px 0;border-bottom:1px solid var(--line)}
-.ln b{font-variant-numeric:tabular-nums}
-.hrs{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.5}
-.reset{font:inherit;font-size:13px;margin-top:12px;border:1px solid var(--line);background:var(--white);border-radius:8px;padding:6px 12px;cursor:pointer}
-@media(max-width:960px){.cg{grid-template-columns:1fr}.out{position:static}}
-&lt;/style&gt;&lt;div class=&quot;wrap&quot;&gt;
-&lt;h1&gt;What is the change worth to PX?&lt;/h1&gt;
-&lt;p class=&quot;lede&quot;&gt;Let’s fill this in together. The defaults are placeholders to start the conversation, so replace each one with PX’s real numbers.&lt;/p&gt;
-&lt;span class=&quot;illus&quot;&gt;Placeholder assumptions. Edit any field.&lt;/span&gt;
-&lt;div class=&quot;cg&quot;&gt;
- &lt;div class=&quot;card&quot;&gt;
-  &lt;div class=&quot;grp&quot;&gt;&lt;h2&gt;Reporting and data upkeep&lt;/h2&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;rep&quot;&gt;Hours a week building reports and chasing updates&lt;small&gt;RevOps and GMs&lt;/small&gt;&lt;/label&gt;&lt;input id=&quot;rep&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;10&quot;&gt;&lt;/div&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;bi&quot;&gt;Hours a week maintaining the HubSpot data push&lt;small&gt;BI team&lt;/small&gt;&lt;/label&gt;&lt;input id=&quot;bi&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;4&quot;&gt;&lt;/div&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;rate&quot;&gt;Loaded cost per hour ($)&lt;/label&gt;&lt;input id=&quot;rate&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;75&quot;&gt;&lt;/div&gt;&lt;/div&gt;
-  &lt;div class=&quot;grp&quot;&gt;&lt;h2&gt;Seller time&lt;/h2&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;sel&quot;&gt;Commercial team members&lt;/label&gt;&lt;input id=&quot;sel&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;28&quot;&gt;&lt;/div&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;adm&quot;&gt;Admin hours per person each week&lt;small&gt;Logging, uploads, stage updates&lt;/small&gt;&lt;/label&gt;&lt;input id=&quot;adm&quot; type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.5&quot; value=&quot;3&quot;&gt;&lt;/div&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;rec&quot;&gt;Share of that time given back (%)&lt;/label&gt;&lt;input id=&quot;rec&quot; type=&quot;number&quot; min=&quot;0&quot; max=&quot;100&quot; value=&quot;50&quot;&gt;&lt;/div&gt;&lt;/div&gt;
-  &lt;div class=&quot;grp&quot;&gt;&lt;h2&gt;Revenue unlocked&lt;/h2&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;pub&quot;&gt;Signed publishers a year that never earn&lt;/label&gt;&lt;input id=&quot;pub&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;25&quot;&gt;&lt;/div&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;act&quot;&gt;Share activated with milestone tracking (%)&lt;/label&gt;&lt;input id=&quot;act&quot; type=&quot;number&quot; min=&quot;0&quot; max=&quot;100&quot; value=&quot;20&quot;&gt;&lt;/div&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;pnr&quot;&gt;First-year net revenue per activated publisher ($)&lt;/label&gt;&lt;input id=&quot;pnr&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;15000&quot;&gt;&lt;/div&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;stl&quot;&gt;Stalled advertiser deals recovered a year&lt;/label&gt;&lt;input id=&quot;stl&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;4&quot;&gt;&lt;/div&gt;
-   &lt;div class=&quot;in&quot;&gt;&lt;label for=&quot;anr&quot;&gt;Projected net revenue per advertiser deal ($)&lt;/label&gt;&lt;input id=&quot;anr&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;20000&quot;&gt;&lt;/div&gt;&lt;/div&gt;
- &lt;/div&gt;
- &lt;div class=&quot;out&quot;&gt;
-  &lt;div class=&quot;tot&quot;&gt;&lt;div class=&quot;l&quot;&gt;Estimated annual value&lt;/div&gt;&lt;div class=&quot;v&quot; id=&quot;total&quot;&gt;$0&lt;/div&gt;&lt;/div&gt;
-  &lt;div class=&quot;card&quot;&gt;
-   &lt;div class=&quot;ln&quot;&gt;&lt;span&gt;Reporting and data upkeep&lt;/span&gt;&lt;b id=&quot;o1&quot;&gt;&lt;/b&gt;&lt;/div&gt;
-   &lt;div class=&quot;ln&quot;&gt;&lt;span&gt;Seller time given back&lt;/span&gt;&lt;b id=&quot;o2&quot;&gt;&lt;/b&gt;&lt;/div&gt;
-   &lt;div class=&quot;ln&quot;&gt;&lt;span&gt;Publishers activated&lt;/span&gt;&lt;b id=&quot;o3&quot;&gt;&lt;/b&gt;&lt;/div&gt;
-   &lt;div class=&quot;ln&quot;&gt;&lt;span&gt;Stalled deals recovered&lt;/span&gt;&lt;b id=&quot;o4&quot;&gt;&lt;/b&gt;&lt;/div&gt;
-   &lt;p class=&quot;hrs&quot; id=&quot;hrs&quot;&gt;&lt;/p&gt;
-   &lt;button class=&quot;reset&quot; id=&quot;reset&quot;&gt;Reset to placeholders&lt;/button&gt;
-  &lt;/div&gt;
- &lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;script&gt;
-const ids=[&#x27;rep&#x27;,&#x27;bi&#x27;,&#x27;rate&#x27;,&#x27;sel&#x27;,&#x27;adm&#x27;,&#x27;rec&#x27;,&#x27;pub&#x27;,&#x27;act&#x27;,&#x27;pnr&#x27;,&#x27;stl&#x27;,&#x27;anr&#x27;];const d={};ids.forEach(i=&gt;d[i]=document.getElementById(i).value);
-const $=i=&gt;+document.getElementById(i).value||0;const f=n=&gt;&#x27;$&#x27;+Math.round(n).toLocaleString();
-function calc(){const w=48;const h1=($(&#x27;rep&#x27;)+$(&#x27;bi&#x27;))*w;const o1=h1*$(&#x27;rate&#x27;);const h2=$(&#x27;sel&#x27;)*$(&#x27;adm&#x27;)*$(&#x27;rec&#x27;)/100*w;const o2=h2*$(&#x27;rate&#x27;);
-const o3=$(&#x27;pub&#x27;)*$(&#x27;act&#x27;)/100*$(&#x27;pnr&#x27;);const o4=$(&#x27;stl&#x27;)*$(&#x27;anr&#x27;);
-document.getElementById(&#x27;o1&#x27;).textContent=f(o1);document.getElementById(&#x27;o2&#x27;).textContent=f(o2);document.getElementById(&#x27;o3&#x27;).textContent=f(o3);document.getElementById(&#x27;o4&#x27;).textContent=f(o4);
-document.getElementById(&#x27;total&#x27;).textContent=f(o1+o2+o3+o4);
-document.getElementById(&#x27;hrs&#x27;).textContent=Math.round(h1+h2).toLocaleString()+&#x27; hours a year given back, which is about &#x27;+(Math.round((h1+h2)/1920*10)/10)+&#x27; full-time people. This assumes 48 working weeks.&#x27;;}
-ids.forEach(i=&gt;document.getElementById(i).addEventListener(&#x27;input&#x27;,calc));
-document.getElementById(&#x27;reset&#x27;).onclick=()=&gt;{ids.forEach(i=&gt;document.getElementById(i).value=d[i]);calc()};calc();
-&lt;/script&gt;&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><iframe title="Cost picture" srcdoc="&lt;!-- Cost picture --&gt;&lt;style&gt;
-@import url(&#x27;https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap&#x27;);
-:root{--ink:#14233d;--muted:#5a6778;--line:#d9e0e8;--paper:#f4f6f9;--white:#fff;--blue:#1b6fd6;--blue-t:#e4eefb;--violet:#6b3fd1;--violet-t:#efe9fb;--teal:#0f8a77;--teal-t:#e3f3ef;--amber:#c46a12;--amber-t:#fbeedf;--pain:#c2334d;--pain-t:#fbe9ec;--slack:#4a154b}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:&#x27;Instrument Sans&#x27;,system-ui,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 48px}
-h1{font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
-.lede{font-size:16px;color:var(--muted);margin:0 0 26px;max-width:72ch;line-height:1.5}
-h2{font-size:18px;font-weight:600;margin:0 0 12px}
-.illus{display:inline-block;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:3px 10px;margin-bottom:14px}
-.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
-&lt;/style&gt;&lt;style&gt;
-.cc{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.cc h2 small{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:3px}
-.it{display:grid;grid-template-columns:1fr auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.4}
-.it small{display:block;color:var(--muted);font-size:12px}
-.it b{white-space:nowrap;font-variant-numeric:tabular-nums}
-.sub{font-size:12px;font-weight:600;color:var(--muted);margin:16px 0 2px}
-.hid b{color:var(--pain)}
-.tbd b{color:var(--muted);font-weight:500}
-.inc{color:var(--teal)!important}
-.sum{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.5}
-.today .sum{background:var(--pain-t)}.sf .sum{background:var(--teal-t)}
-.principles{margin-top:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.principles .card{font-size:14px;line-height:1.5}.principles b{display:block;margin-bottom:4px}
-@media(max-width:960px){.cc,.principles{grid-template-columns:1fr}}
-&lt;/style&gt;&lt;div class=&quot;wrap&quot;&gt;
-&lt;h1&gt;The full cost picture&lt;/h1&gt;
-&lt;p class=&quot;lede&quot;&gt;An honest comparison should count more than the HubSpot invoice. It should include what PX already spends with Salesforce and the hidden cost of the workarounds around HubSpot.&lt;/p&gt;
-&lt;div class=&quot;cc&quot;&gt;
- &lt;div class=&quot;card today&quot;&gt;&lt;h2&gt;Today&lt;small&gt;Annual spend, to fill in together&lt;/small&gt;&lt;/h2&gt;
-  &lt;div class=&quot;sub&quot;&gt;Software&lt;/div&gt;
-  &lt;div class=&quot;it&quot;&gt;&lt;span&gt;HubSpot&lt;small&gt;Per-seat model&lt;/small&gt;&lt;/span&gt;&lt;b&gt;PX to confirm&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it&quot;&gt;&lt;span&gt;Slack&lt;small&gt;Already Salesforce&lt;/small&gt;&lt;/span&gt;&lt;b&gt;PX to confirm&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it&quot;&gt;&lt;span&gt;Tableau&lt;small&gt;Already Salesforce&lt;/small&gt;&lt;/span&gt;&lt;b&gt;PX to confirm&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it&quot;&gt;&lt;span&gt;Monday.com&lt;small&gt;Being phased out&lt;/small&gt;&lt;/span&gt;&lt;b&gt;To confirm&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;sub&quot;&gt;Hidden costs&lt;/div&gt;
-  &lt;div class=&quot;it hid&quot;&gt;&lt;span&gt;BI team upkeep of the HubSpot push&lt;/span&gt;&lt;b&gt;Hours to confirm&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it hid&quot;&gt;&lt;span&gt;Report building and manual deal review&lt;/span&gt;&lt;b&gt;Hours to confirm&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it hid&quot;&gt;&lt;span&gt;Rep time on logging and uploads&lt;/span&gt;&lt;b&gt;Hours to confirm&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it hid&quot;&gt;&lt;span&gt;Publishers who sign but never earn&lt;/span&gt;&lt;b&gt;Revenue to confirm&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;sum&quot;&gt;Visible software spend across two vendor relationships, plus workaround costs that don’t show up on any invoice.&lt;/div&gt;
- &lt;/div&gt;
- &lt;div class=&quot;card sf&quot;&gt;&lt;h2&gt;With Salesforce&lt;small&gt;Pricing to be reviewed together in the pricing session&lt;/small&gt;&lt;/h2&gt;
-  &lt;div class=&quot;sub&quot;&gt;Platform&lt;/div&gt;
-  &lt;div class=&quot;it tbd&quot;&gt;&lt;span&gt;Sales Cloud&lt;small&gt;Sized to the ~25–30 people who edit records&lt;/small&gt;&lt;/span&gt;&lt;b&gt;Proposal to follow&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it tbd&quot;&gt;&lt;span&gt;Service Cloud&lt;small&gt;For the team handling integration cases&lt;/small&gt;&lt;/span&gt;&lt;b&gt;Proposal to follow&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it tbd&quot;&gt;&lt;span&gt;Slack&lt;small&gt;Consolidated into the same agreement&lt;/small&gt;&lt;/span&gt;&lt;b class=&quot;inc&quot;&gt;Consolidated&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it tbd&quot;&gt;&lt;span&gt;Tableau&lt;small&gt;Consolidated into the same agreement&lt;/small&gt;&lt;/span&gt;&lt;b class=&quot;inc&quot;&gt;Consolidated&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;it tbd&quot;&gt;&lt;span&gt;Data Cloud&lt;small&gt;Phase 1, sized to PX data volumes&lt;/small&gt;&lt;/span&gt;&lt;b&gt;Proposal to follow&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;sub&quot;&gt;One-time&lt;/div&gt;
-  &lt;div class=&quot;it tbd&quot;&gt;&lt;span&gt;Implementation and migration&lt;small&gt;Partner-led, scoped with PX&lt;/small&gt;&lt;/span&gt;&lt;b&gt;Scope to follow&lt;/b&gt;&lt;/div&gt;
-  &lt;div class=&quot;sum&quot;&gt;One relationship and one contract, with the workaround costs on the left designed out.&lt;/div&gt;
- &lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;principles&quot;&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;Right-sized seats&lt;/b&gt;Licenses go to the people who edit records. Everyone else sees insight in Slack and Tableau.&lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;Phased spend&lt;/b&gt;Start with core CRM and Data Cloud together. Add advanced marketing only when there’s value to show.&lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;No double-paying&lt;/b&gt;Licenses can ramp during migration while HubSpot runs out its term.&lt;/div&gt;
- &lt;div class=&quot;card&quot;&gt;&lt;b&gt;Predictable renewals&lt;/b&gt;We’ll address how pricing holds after year one up front.&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;script&gt;document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if([&#x27;ArrowRight&#x27;,&#x27;ArrowLeft&#x27;,&#x27;PageDown&#x27;,&#x27;PageUp&#x27;].includes(e.key)&amp;&amp;!e.shiftKey){parent.postMessage({k:e.key},&#x27;*&#x27;)}});&lt;/script&gt;"></iframe></div><div class="view"><div class="pg plan">
+<div class="card jr"><h2>Marketing journeys for every side of the market</h2>
+ <div class="jg">
+  <div class="jc"><div class="jh b1">Buyers</div><div class="steps"><span>Form fill</span><span>Nurture</span><span>Sales-ready</span><span>Signed</span></div><p>Form fills are nurtured until they’re ready for a sales director, and existing buyers are removed from acquisition campaigns.</p></div>
+  <div class="jc"><div class="jh b2">Publishers</div><div class="steps"><span>Signed</span><span>Docs and nudges</span><span>Test lead</span><span>Live</span></div><p>Onboarding emails follow integration status, so fewer signed publishers sit at $0.</p></div>
+  <div class="jc"><div class="jh b3">PX Local</div><div class="steps"><span>Sign up</span><span>Criteria</span><span>Funds</span><span>First lead</span></div><p>Self-serve with no sales call, so marketing carries activation and is measured on it.</p></div>
+ </div>
+ <div class="ins"><span class="illus">Illustrative</span> Publisher signed 21 days ago with no test lead yet → onboarding nudge sent with integration docs, and the publisher account manager is tasked in Slack.</div>
+</div>
+</div>
+</div>
+<div class="view" id="s13">
+<div class="wrap">
+<h1>What is the change worth to PX?</h1>
+<p class="lede">Let’s fill this in together. The defaults are placeholders to start the conversation, so replace each one with PX’s real numbers.</p>
+<span class="illus">Placeholder assumptions. Edit any field.</span>
+<div class="cg">
+ <div class="card">
+  <div class="grp"><h2>Reporting and data upkeep</h2>
+   <div class="in"><label for="rep">Hours a week building reports and chasing updates<small>RevOps and GMs</small></label><input id="rep" type="number" min="0" value="10"></div>
+   <div class="in"><label for="bi">Hours a week maintaining the HubSpot data push<small>BI team</small></label><input id="bi" type="number" min="0" value="4"></div>
+   <div class="in"><label for="rate">Loaded cost per hour ($)</label><input id="rate" type="number" min="0" value="75"></div></div>
+  <div class="grp"><h2>Seller time</h2>
+   <div class="in"><label for="sel">Commercial team members</label><input id="sel" type="number" min="0" value="28"></div>
+   <div class="in"><label for="adm">Admin hours per person each week<small>Logging, uploads, stage updates</small></label><input id="adm" type="number" min="0" step="0.5" value="3"></div>
+   <div class="in"><label for="rec">Share of that time given back (%)</label><input id="rec" type="number" min="0" max="100" value="50"></div></div>
+  <div class="grp"><h2>Marketing spend</h2>
+   <div class="in"><label for="ads">Annual paid media spend ($)<small>Google, Meta and LinkedIn</small></label><input id="ads" type="number" min="0" value="200000"></div>
+   <div class="in"><label for="shift">Share of spend reallocated to better channels (%)</label><input id="shift" type="number" min="0" max="100" value="20"></div>
+   <div class="in"><label for="gain">Efficiency gain on that share (%)</label><input id="gain" type="number" min="0" max="100" value="15"></div>
+   <div class="in"><label for="waste">Share of acquisition spend reaching existing buyers (%)</label><input id="waste" type="number" min="0" max="100" value="5"></div></div>
+  <div class="grp"><h2>Tool consolidation</h2>
+   <div class="in"><label for="cons">Annual spend on tools retired or reduced ($)<small>For example the blast tool, Monday.com or a planned BI tool</small></label><input id="cons" type="number" min="0" value="15000"></div></div>
+  <div class="grp"><h2>Revenue unlocked</h2>
+   <div class="in"><label for="pub">Signed publishers a year that never earn</label><input id="pub" type="number" min="0" value="25"></div>
+   <div class="in"><label for="act">Share activated with milestone tracking (%)</label><input id="act" type="number" min="0" max="100" value="20"></div>
+   <div class="in"><label for="pnr">First-year net revenue per activated publisher ($)</label><input id="pnr" type="number" min="0" value="15000"></div>
+   <div class="in"><label for="stl">Stalled advertiser deals recovered a year</label><input id="stl" type="number" min="0" value="4"></div>
+   <div class="in"><label for="anr">Projected net revenue per advertiser deal ($)</label><input id="anr" type="number" min="0" value="20000"></div></div>
+ </div>
+ <div class="out">
+  <div class="tot"><div class="l">Estimated annual value</div><div class="v" id="total">$0</div></div>
+  <div class="card">
+   <div class="ln"><span>Reporting and data upkeep</span><b id="o1"></b></div>
+   <div class="ln"><span>Seller time given back</span><b id="o2"></b></div>
+   <div class="ln"><span>Media spend optimized</span><b id="o5"></b></div>
+   <div class="ln"><span>Wasted spend on existing buyers removed</span><b id="o6"></b></div>
+   <div class="ln"><span>Tool consolidation</span><b id="o7"></b></div>
+   <div class="ln"><span>Publishers activated</span><b id="o3"></b></div>
+   <div class="ln"><span>Stalled deals recovered</span><b id="o4"></b></div>
+   <p class="hrs" id="hrs"></p>
+   <button class="reset" id="reset">Reset to placeholders</button> <button class="reset" id="calc-print">Print or save as PDF</button>
+  </div>
+ </div>
+</div>
+</div>
+</div>
+<div class="view" id="s14">
+<div class="wrap">
+  <h1>What PX can retire, reduce or avoid</h1>
+  <p class="lede">The investment should be weighed against everything it replaces, not just the HubSpot invoice. Here’s our honest view, tool by tool.</p>
+  <div class="card">
+  <table>
+    <tr><th>Today</th><th>What it does now</th><th>With Salesforce</th><th>Outcome</th></tr>
+    <tr><td><b>HubSpot</b><small>Sales, service and Marketing Hub, Brand add-on, dedicated IP</small></td><td>CRM, pipelines, landing pages, forms, sequences</td><td>Sales Cloud, Service Cloud and Marketing Cloud on one platform</td><td><span class="st cons">Replace</span></td></tr>
+    <tr><td><b>Email blast tool</b></td><td>Large sends kept away from the main domain</td><td>Marketing Cloud sending across multiple domains and IPs, with deliverability visibility</td><td><span class="st retire">Retire</span></td></tr>
+    <tr><td><b>BI-built HubSpot push</b></td><td>Moves campaign and net revenue data from ClickHouse</td><td>Data Cloud ingests ClickHouse data and matches it on PX account ID</td><td><span class="st retire">Retire</span></td></tr>
+    <tr><td><b>Monday.com</b><small>Pipeline tracking</small></td><td>Visibility on parts of the pipeline</td><td>Pipelines and alerts in Salesforce and Slack</td><td><span class="st retire">Retire</span></td></tr>
+    <tr><td><b>Monday.com</b><small>Strategy boards and client workspaces</small></td><td>Planning, KPI boards, shared spaces with clients</td><td>Slack canvases and lists for planning, Slack surfaces for KPI views, and Slack Connect channels with clients</td><td><span class="st reduce">Reduce over time</span></td></tr>
+    <tr><td><b>Metabase</b><small>Under evaluation</small></td><td>Conversational analytics on ClickHouse</td><td>Slack surfaces and Tableau on the same Data Cloud data</td><td><span class="st avoid">Avoid</span></td></tr>
+    <tr><td><b>Custom NetSuite connector</b><small>Previously quoted around $10K</small></td><td>Would give non-finance teams payment visibility</td><td>A standard NetSuite integration, scoped with the partner, with payment status in Salesforce and Slack</td><td><span class="st avoid">Avoid custom build</span></td></tr>
+    <tr><td><b>Slack and Tableau</b><small>Separate agreements</small></td><td>Negotiated and managed separately</td><td>Consolidated into one Salesforce agreement</td><td><span class="st cons">Consolidate</span></td></tr>
+  </table>
+  </div>
+  <div class="note"><b>Being straight about Monday.com:</b> Salesforce doesn’t have a one-for-one replacement. We’d suggest moving the pieces that fit (pipeline, KPI views, client channels) and reviewing the strategy boards together, rather than forcing a full switch.</div>
+</div>
+</div>
+<div class="view" id="s15">
+<div class="wrap">
+<h1>The full cost picture</h1>
+<p class="lede">An honest comparison should count more than the HubSpot invoice. It should include what PX already spends with Salesforce and the hidden cost of the workarounds around HubSpot.</p>
+<div class="cc">
+ <div class="card today"><h2>Today<small>Annual spend. Add or edit amounts as you go</small></h2>
+  <div class="sub">Software (edit any amount)</div>
+  <div class="it ed"><label for="cost-hub">HubSpot<small>Sales, service and Marketing Hub, Brand add-on and dedicated IP</small></label><input id="cost-hub" type="number" min="0" value="" placeholder="PX to add"></div>
+  <div class="it ed"><label for="cost-slack">Slack<small>Already Salesforce</small></label><input id="cost-slack" type="number" min="0" value="" placeholder="To add"></div>
+  <div class="it ed"><label for="cost-tab">Tableau<small>Already Salesforce</small></label><input id="cost-tab" type="number" min="0" value="" placeholder="To add"></div>
+  <div class="it ed"><label for="cost-mon">Monday.com</label><input id="cost-mon" type="number" min="0" value="" placeholder="PX to add"></div>
+  <div class="it ed"><label for="cost-blast">Email blast tool</label><input id="cost-blast" type="number" min="0" value="" placeholder="PX to add"></div>
+  <div class="it ed"><label for="cost-other">Other tools<small>For example Metabase or connector fees</small></label><input id="cost-other" type="number" min="0" value="" placeholder="PX to add"></div>
+  <div class="it tot"><span>Annual software spend today</span><b id="cost-total">$0</b></div>
+  <div class="sub">Hidden costs</div>
+  <div class="it hid"><span>BI team upkeep of the HubSpot push</span><b>Hours to confirm</b></div>
+  <div class="it hid"><span>Report building and manual deal review</span><b>Hours to confirm</b></div>
+  <div class="it hid"><span>Rep time on logging and uploads</span><b>Hours to confirm</b></div>
+  <div class="it hid"><span>Publishers who sign but never earn</span><b>Revenue to confirm</b></div>
+  <div class="sum">Software spend across several vendor relationships, plus workaround costs that don’t show up on any invoice. See the value calculator for those.</div>
+ </div>
+ <div class="card sf"><h2>With Salesforce<small>Pricing to be reviewed together in the pricing session</small></h2>
+  <div class="sub">Platform</div>
+  <div class="it tbd"><span>Sales Cloud<small>Sized to the ~25–30 people who edit records</small></span><b>Proposal to follow</b></div>
+  <div class="it tbd"><span>Service Cloud<small>For the team handling integration cases</small></span><b>Proposal to follow</b></div>
+  <div class="it tbd"><span>Marketing Cloud<small>Pages, forms, email and journeys, replacing Marketing Hub and the blast tool</small></span><b>Proposal to follow</b></div>
+  <div class="it tbd"><span>Slack<small>Consolidated into the same agreement</small></span><b class="inc">Consolidated</b></div>
+  <div class="it tbd"><span>Tableau<small>Consolidated into the same agreement</small></span><b class="inc">Consolidated</b></div>
+  <div class="it tbd"><span>Data Cloud<small>Sized to PX data volumes</small></span><b>Proposal to follow</b></div>
+  <div class="sub">One-time</div>
+  <div class="it tbd"><span>Implementation and migration<small>Partner-led, scoped with PX</small></span><b>Scope to follow</b></div>
+  <div class="sum">One relationship and one contract, with the workaround costs on the left designed out.</div>
+ </div>
+</div>
+<div class="principles">
+ <div class="card"><b>Right-sized seats</b>Licenses go to the people who edit records. Everyone else sees insight in Slack and Tableau.</div>
+ <div class="card"><b>Scoped together</b>Scope is set with PX and the implementation partner, so investment matches the value PX wants first.</div>
+ <div class="card"><b>No double-paying</b>Licenses can ramp during migration while HubSpot runs out its term.</div>
+ <div class="card"><b>Predictable renewals</b>We’ll address how pricing holds after year one up front.</div>
+</div>
+<button class="pbtn" id="cost-print">Print or save as PDF</button>
+</div>
+</div>
+<div class="view" id="s16">
+<div class="pg plan">
     <h1>The path forward</h1>
     <p class="lede">A proposed plan that gets PX to a decision ahead of the HubSpot notice deadline in late October. These dates are a starting point for us to set together.</p>
     <div class="tl">
       <div class="ms done"><span class="d">Sept</span><h3>Discovery</h3><p>Intro, licensing review and business process discovery</p></div>
-      <div class="ms done"><span class="d">Oct 1</span><h3>Solutions readback</h3><p>Today: how we understand PX and where Salesforce fits</p></div>
-      <div class="ms"><span class="d">Week of Oct 5</span><h3>Deep dives</h3><p>Integration session on the PX platform and ClickHouse, plus a marketing session</p></div>
-      <div class="ms"><span class="d">Week of Oct 12</span><h3>Pricing and scope</h3><p>Right-sized pricing, implementation plan and a value case</p></div>
-      <div class="ms"><span class="d">Mid-October</span><h3>Leadership review</h3><p>An optional session with the CEO and other decision makers</p></div>
+      <div class="ms done"><span class="d">Oct 1</span><h3>Solutions readback</h3><p>How we understand PX and where Salesforce fits</p></div>
+      <div class="ms"><span class="d">Early October</span><h3>Leadership preview</h3><p>PX shares this readback and the value model with its CEO</p></div>
+      <div class="ms"><span class="d">Mid-October</span><h3>Check-in and pricing</h3><p>Leadership feedback, right-sized pricing and NetSuite options</p></div>
+      <div class="ms"><span class="d">When PX is ready</span><h3>Deep dives</h3><p>Integrations (PX platform, ClickHouse, NetSuite) and marketing, as PX needs them</p></div>
       <div class="ms key"><span class="d">Late October</span><h3>Decision</h3><p>Before the 60-day HubSpot notice, ahead of the December renewal</p></div>
     </div>
     <div class="cols2">
-      <div class="panel"><h2>How we’d implement</h2><ul>
-        <li><b>Phase 1:</b> Move core CRM from HubSpot (advertiser and publisher pipelines, contacts, companies, deals and tickets), and connect ClickHouse through Data Cloud so net revenue is on every account and deal from day one</li>
-        <li><b>Phase 2:</b> Proactive insights and workflows in Slack and Claude, built on that unified data</li>
-        <li><b>Phase 3:</b> Expand into marketing automation and ad optimization</li>
-        <li>Partner-led, and sized for a lean RevOps team</li>
+      <div class="panel"><h2>How we’d get there</h2><ul>
+        <li>A partner-led implementation, sized for a lean RevOps team</li>
+        <li>Scope and sequencing set together in a dedicated scoping session with the partner</li>
+        <li>HubSpot data, custom objects and workflows mapped across, with marketing included</li>
+        <li>PX platform data connected from ClickHouse, so net revenue is visible in the CRM</li>
       </ul></div>
-      <div class="panel"><h2>What we’d like to agree on today</h2><ul>
-        <li>Which pillar matters most to PX right now</li>
-        <li>Who else should be part of the evaluation</li>
-        <li>Dates for the integration and marketing sessions</li>
-        <li>What PX needs to see to make a decision in October</li>
+      <div class="panel"><h2>What happens next</h2><ul>
+        <li>PX reviews this readback and the value model with its CEO</li>
+        <li>Salesforce adds current Slack and Tableau spend, NetSuite integration options and Slack surfaces detail</li>
+        <li>PX adds Monday.com and other tool costs to the cost picture</li>
+        <li>A 30-minute check-in to gather leadership feedback and agree on next steps</li>
       </ul></div>
     </div>
-  </div></div>
+  </div>
+</div>
 </main>
-<script>
-const views=[...document.querySelectorAll('.view')],tabs=[...document.querySelectorAll('nav [data-i]')];
-let cur=0;
-function go(i){cur=Math.max(0,Math.min(views.length-1,i));views.forEach((v,j)=>v.classList.toggle('on',j===cur));
-tabs.forEach(t=>t.setAttribute('aria-current',String(+t.dataset.i===cur)));
-document.getElementById('count').textContent=(cur+1)+' / '+views.length;history.replaceState(null,'','#'+cur);}
-document.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.i)));
-document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
-function key(k){if(k==='ArrowRight'||k==='PageDown')go(cur+1);if(k==='ArrowLeft'||k==='PageUp')go(cur-1);}
-document.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(!e.shiftKey)key(e.key)});
-window.addEventListener('message',e=>{if(e.data&&e.data.k)key(e.data.k)});
-go(parseInt(location.hash.slice(1))||0);
-</script>
-</body></html>
+
+</body>
+</html>
