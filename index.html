@@ -1361,9 +1361,9 @@ main{flex:1;position:relative;min-height:0}
 <div class="cc">
  <div class="card today"><h2>Today<small>Annual spend. Add or edit amounts as you go</small></h2>
   <div class="sub">Software (edit any amount)</div>
-  <div class="it ed"><label for="cost-hub">HubSpot<small>Sales, service and Marketing Hub, Brand add-on and dedicated IP</small></label><input id="cost-hub" type="number" min="0" value="90000" placeholder="PX to add"></div>
-  <div class="it ed"><label for="cost-slack">Slack<small>Already Salesforce</small></label><input id="cost-slack" type="number" min="0" value="29000" placeholder="To add"></div>
-  <div class="it ed"><label for="cost-tab">Tableau<small>Already Salesforce</small></label><input id="cost-tab" type="number" min="0" value="15600" placeholder="To add"></div>
+  <div class="it ed"><label for="cost-hub">HubSpot<small>Sales, service and Marketing Hub, Brand add-on and dedicated IP</small></label><input id="cost-hub" type="number" min="0" value="" placeholder="PX to add"></div>
+  <div class="it ed"><label for="cost-slack">Slack<small>Already Salesforce</small></label><input id="cost-slack" type="number" min="0" value="" placeholder="To add"></div>
+  <div class="it ed"><label for="cost-tab">Tableau<small>Already Salesforce</small></label><input id="cost-tab" type="number" min="0" value="" placeholder="To add"></div>
   <div class="it ed"><label for="cost-mon">Monday.com</label><input id="cost-mon" type="number" min="0" value="" placeholder="PX to add"></div>
   <div class="it ed"><label for="cost-blast">Email blast tool</label><input id="cost-blast" type="number" min="0" value="" placeholder="PX to add"></div>
   <div class="it ed"><label for="cost-other">Other tools<small>For example Metabase or connector fees</small></label><input id="cost-other" type="number" min="0" value="" placeholder="PX to add"></div>
@@ -1488,7 +1488,7 @@ document.getElementById('reset').onclick=()=>{ids.forEach(i=>document.getElement
 document.getElementById('calc-print').onclick=()=>window.print();
 
 })();
-/* cost.html */
+/* cost_public.html */
 (function(){
 
 const ids=['cost-hub','cost-slack','cost-tab','cost-mon','cost-blast','cost-other'];
